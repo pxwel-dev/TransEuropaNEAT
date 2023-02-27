@@ -1,5 +1,6 @@
 import neat
 import os
+import multiprocessing
 from PlayerBoardCities import Player
 from GlobalBoardCities import Board
 
@@ -17,7 +18,7 @@ class TransEuropaGame:
         self.player5 = Player(self.board, neat.nn.FeedForwardNetwork.create(self.genomes[4], config), genomes[4])
         self.player6 = Player(self.board, neat.nn.FeedForwardNetwork.create(self.genomes[5], config), genomes[5])
 
-    def start_game(self):
+    def init_game(self):
         self.player1.citiesToCapture = self.board.init_player_cities()
         self.player2.citiesToCapture = self.board.init_player_cities()
         self.player3.citiesToCapture = self.board.init_player_cities()
@@ -32,136 +33,95 @@ class TransEuropaGame:
         self.player5.set_map_targets()
         self.player6.set_map_targets()
 
-        if self.round == 0:
-            print(self.round)
+    def play_moves(self):
+        self.round += 1
+        print("Round: " + str(self.round))
 
-            val1 = self.player1.make_move()
-            val2 = self.player2.make_move()
-            val3 = self.player3.make_move()
-            val4 = self.player4.make_move()
-            val5 = self.player5.make_move()
-            val6 = self.player6.make_move()
-            vals = [val1[1], val2[1], val3[1], val4[1], val5[1], val6[1]]
-            for i in range(0, len(vals)):
-                if vals[i]:
-                    self.genomes[i].fitness += 10
+        temp1 = [len(self.player1.citiesToCapture), len(self.player2.citiesToCapture),
+                 len(self.player3.citiesToCapture),
+                 len(self.player4.citiesToCapture), len(self.player5.citiesToCapture),
+                 len(self.player6.citiesToCapture)]
 
-                    self.player1.update_player_board_view(self.board)
-                    self.player2.update_player_board_view(self.board)
-                    self.player3.update_player_board_view(self.board)
-                    self.player4.update_player_board_view(self.board)
-                    self.player5.update_player_board_view(self.board)
-                    self.player6.update_player_board_view(self.board)
-                elif not vals[i]:
-                    self.genomes[i].fitness -= 1
+        vals = [self.player1.make_move(), self.player2.make_move(), self.player3.make_move(),
+                self.player4.make_move(), self.player5.make_move(), self.player6.make_move()]
 
-            if all(vals):
-                self.round += 1
-                print(self.round)
+        temp2 = [len(self.player1.citiesToCapture), len(self.player2.citiesToCapture),
+                 len(self.player3.citiesToCapture),
+                 len(self.player4.citiesToCapture), len(self.player5.citiesToCapture),
+                 len(self.player6.citiesToCapture)]
+
+        for i in range(0, len(vals)):
+            if vals[i][1]:
+                self.genomes[i].fitness += 25
+
+                self.player1.update_player_board_view(self.board)
+                self.player2.update_player_board_view(self.board)
+                self.player3.update_player_board_view(self.board)
+                self.player4.update_player_board_view(self.board)
+                self.player5.update_player_board_view(self.board)
+                self.player6.update_player_board_view(self.board)
+
+                if temp2[i] < temp1[i]:
+                    self.genomes[i].fitness += 50
             else:
-                pass
+                self.genomes[i].fitness -= 1000
 
-            distancesToCities = [self.player1.closest_target_distance(val1[0], [j for i in self.player1.citiesToCapture for j in i[1]]),
-                                 self.player2.closest_target_distance(val2[0], [j for i in self.player2.citiesToCapture for j in i[1]]),
-                                 self.player3.closest_target_distance(val3[0], [j for i in self.player3.citiesToCapture for j in i[1]]),
-                                 self.player4.closest_target_distance(val4[0], [j for i in self.player4.citiesToCapture for j in i[1]]),
-                                 self.player5.closest_target_distance(val5[0], [j for i in self.player5.citiesToCapture for j in i[1]]),
-                                 self.player6.closest_target_distance(val6[0], [j for i in self.player6.citiesToCapture for j in i[1]])]
-            print(distancesToCities)
-            for i in range(0, len(distancesToCities)):
-                score = 5
-                if 3 >= distancesToCities[i] > 0:
-                    score -= 1
-                elif 6 >= distancesToCities[i] > 3:
-                    score -= 2
-                elif 9 >= distancesToCities[i] > 6:
-                    score -= 3
-                elif 12 >= distancesToCities[i] > 9:
-                    score -= 4
-                else:
-                    score -= 15
-                self.genomes[i].fitness += score
+        self.city_distance_fitness(vals[0][0], vals[1][0], vals[2][0], vals[3][0], vals[4][0], vals[5][0])
 
-        if self.round == 1:
-            while True:
-                val1 = self.player1.make_move()
-                val2 = self.player2.make_move()
-                val3 = self.player3.make_move()
-                val4 = self.player4.make_move()
-                val5 = self.player5.make_move()
-                val6 = self.player6.make_move()
-                vals = [val1, val2, val3, val4, val5, val6]
-                for i in range(0, len(vals)):
-                    if vals[i]:
-                        self.genomes[i].fitness += 10
+        #if self.round > 1:
+        #   self.track_network_distance_fitness(vals[0][0], vals[1][0], vals[2][0], vals[3][0], vals[4][0], vals[5][0])
 
-                        self.player1.update_player_board_view(self.board)
-                        self.player2.update_player_board_view(self.board)
-                        self.player3.update_player_board_view(self.board)
-                        self.player4.update_player_board_view(self.board)
-                        self.player5.update_player_board_view(self.board)
-                        self.player6.update_player_board_view(self.board)
-                    if not vals[i]:
-                        self.genomes[i].fitness -= 1
-                if all(vals):
-                    distancesToCities = [self.player1.closest_target_distance(val1[0],
-                                                                              [j for i in self.player1.citiesToCapture for j in i[1]]),
-                                         self.player2.closest_target_distance(val2[0],
-                                                                              [j for i in self.player2.citiesToCapture
-                                                                               for j in i[1]]),
-                                         self.player3.closest_target_distance(val3[0],
-                                                                              [j for i in self.player3.citiesToCapture
-                                                                               for j in i[1]]),
-                                         self.player4.closest_target_distance(val4[0],
-                                                                              [j for i in self.player4.citiesToCapture
-                                                                               for j in i[1]]),
-                                         self.player5.closest_target_distance(val5[0],
-                                                                              [j for i in self.player5.citiesToCapture
-                                                                               for j in i[1]]),
-                                         self.player6.closest_target_distance(val6[0],
-                                                                              [j for i in self.player6.citiesToCapture
-                                                                               for j in i[1]])]
-                    for i in range(0, len(distancesToCities)):
-                        score = 5
-                        if distancesToCities[i] == 0:
-                            score += 15
-                        elif 3 >= distancesToCities[i] > 0:
-                            score -= 1
-                        elif 6 >= distancesToCities[i] > 3:
-                            score -= 2
-                        elif 9 >= distancesToCities[i] > 6:
-                            score -= 3
-                        elif 12 >= distancesToCities[i] > 9:
-                            score -= 4
-                        else:
-                            score -= 15
-                        self.genomes[i].fitness += score
+        if all([vals[0][1], vals[1][1], vals[2][1], vals[3][1], vals[4][1], vals[5][1]]):
+            print("All bots have played valid moves")
+            return True
+        else:
+            return False
 
-                    self.round += 1
-                    print(self.round)
-                else:
-                    break
-            distancesToTracks = [
-                self.player1.closest_target_distance(val1[0], [i for i in self.player1.tracksPlaced]),
-                self.player2.closest_target_distance(val2[0], [i for i in self.player2.tracksPlaced]),
-                self.player3.closest_target_distance(val3[0], [i for i in self.player3.tracksPlaced]),
-                self.player4.closest_target_distance(val4[0], [i for i in self.player4.tracksPlaced]),
-                self.player5.closest_target_distance(val5[0], [i for i in self.player5.tracksPlaced]),
-                self.player6.closest_target_distance(val6[0], [i for i in self.player6.tracksPlaced])]
-            print(distancesToTracks)
-            for i in range(0, len(distancesToTracks)):
-                score = 5
-                if 1 >= distancesToTracks[i] > 0:
-                    score -= 1
-                elif 3 >= distancesToTracks[i] > 1:
-                    score -= 2
-                elif 6 >= distancesToTracks[i] > 3:
-                    score -= 3
-                elif 9 >= distancesToTracks[i] > 6:
-                    score -= 4
-                else:
-                    score -= 15
-                self.genomes[i].fitness += score
+    def city_distance_fitness(self, val1, val2, val3, val4, val5, val6):
+        distancesToCities = [
+            self.player1.closest_target_distance(val1, [j for i in self.player1.citiesToCapture for j in i[1]]),
+            self.player2.closest_target_distance(val2, [j for i in self.player2.citiesToCapture for j in i[1]]),
+            self.player3.closest_target_distance(val3, [j for i in self.player3.citiesToCapture for j in i[1]]),
+            self.player4.closest_target_distance(val4, [j for i in self.player4.citiesToCapture for j in i[1]]),
+            self.player5.closest_target_distance(val5, [j for i in self.player5.citiesToCapture for j in i[1]]),
+            self.player6.closest_target_distance(val6, [j for i in self.player6.citiesToCapture for j in i[1]])]
+
+        print("Distances to cities: " + str(distancesToCities))
+
+        for i in range(0, len(distancesToCities)):
+            if 2 >= distancesToCities[i] > 0:
+                self.genomes[i].fitness += 10
+            elif 4 >= distancesToCities[i] > 2:
+                self.genomes[i].fitness += 5
+            elif 6 >= distancesToCities[i] > 4:
+                self.genomes[i].fitness += 2.5
+            elif 8 >= distancesToCities[i] > 6:
+                self.genomes[i].fitness += 1.25
+            elif 10 >= distancesToCities[i] > 8:
+                self.genomes[i].fitness += 0.625
+
+    def track_network_distance_fitness(self, val1, val2, val3, val4, val5, val6):
+        distancesToTracks = [
+            self.player1.closest_target_distance(val1, [i for i in self.player1.tracksPlaced]),
+            self.player2.closest_target_distance(val2, [i for i in self.player2.tracksPlaced]),
+            self.player3.closest_target_distance(val3, [i for i in self.player3.tracksPlaced]),
+            self.player4.closest_target_distance(val4, [i for i in self.player4.tracksPlaced]),
+            self.player5.closest_target_distance(val5, [i for i in self.player5.tracksPlaced]),
+            self.player6.closest_target_distance(val6, [i for i in self.player6.tracksPlaced])]
+
+        print("Distances to tracks: " + str(distancesToTracks))
+
+        for i in range(0, len(distancesToTracks)):
+            if 2 >= distancesToTracks[i] > 0:
+                self.genomes[i].fitness += 10
+            elif 4 >= distancesToTracks[i] > 2:
+                self.genomes[i].fitness += 5
+            elif 6 >= distancesToTracks[i] > 4:
+                self.genomes[i].fitness += 2.5
+            elif 8 >= distancesToTracks[i] > 6:
+                self.genomes[i].fitness += 1.25
+            elif 10 >= distancesToTracks[i] > 8:
+                self.genomes[i].fitness += 0.625
 
 
 def eval_genomes(genomes, conf):
@@ -174,11 +134,15 @@ def eval_genomes(genomes, conf):
                 print("Starting game...")
                 board = Board()
                 game = TransEuropaGame(board, player_genomes, conf)
-                game.start_game()
+                game.init_game()
+                while True:
+                    if not game.play_moves():
+                        break
+                    else:
+                        pass
                 player_genomes.clear()
             else:
                 pass
-
     else:
         if len(genomes) != 0:
             temp_fitness = []
