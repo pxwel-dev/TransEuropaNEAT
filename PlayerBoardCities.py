@@ -2,6 +2,7 @@ class Player:
 
     def __init__(self, board, neuralNet, genome):
         self.score = 0
+        self.won = False
         self.citiesToCapture = []
         self.tracksPlaced = []
         self.currentBoard = board.return_board()
@@ -84,7 +85,11 @@ class Player:
             for j in i[1]:
                 if (j == choice and trackVal) or (j == choice and len(self.tracksPlaced) == 0):
                     self.remove_map_target(i)
+                    self.citiesToCapture.remove(i)
                     self.tracksPlaced.append(choice)
+                    self.score += 1
+                    if self.score == 5:
+                        self.won = True
                     print("City captured")
                     return True
                 else:
