@@ -1,12 +1,16 @@
 import copy
 import random
-
 import neat
 import os
 from multiprocessing import Pool
 import numpy as np
+import pickle
+
 from PlayerBoardCities import Player
 from GlobalBoardCities import Board
+
+
+
 
 POP_SIZE = 72
 NUMBER_OF_GAMES = 10
@@ -62,229 +66,199 @@ class TransEuropaGame:
 
         while self.player1.tracksToPlace != 0 and not self.winner:
             move1 = self.player1.make_move(self.player1.create_network_inputs(self.player1.find_all_possible_moves()))
-            if move1 == ValueError:
-                self.genomes[0].fitness -= 1
-                return False
-            self.update_board(self.player1.currentBoard)
-            if move1[2] == 1:
-                self.genomes[0].fitness -= 0.01
-            elif move1[2] == 2:
-                self.genomes[0].fitness -= 0.02
+            if move1 is not None:
+                self.update_board(self.player1.currentBoard)
+                if move1[1] == 1:
+                    self.genomes[0].fitness -= 0.01
+                elif move1[1] == 2:
+                    self.genomes[0].fitness -= 0.02
 
-            edge = self.player1.check_network_merge()
+                edge = self.player1.check_network_merge()
 
-            if edge:
-                if edge in self.player2.tracksPlaced:
-                    self.player1.merge_networks(self.player2.tracksPlaced)
-                    self.player2.merge_networks(self.player1.tracksPlaced)
-                if edge in self.player3.tracksPlaced:
-                    self.player1.merge_networks(self.player3.tracksPlaced)
-                    self.player3.merge_networks(self.player1.tracksPlaced)
-                if edge in self.player4.tracksPlaced:
-                    self.player1.merge_networks(self.player4.tracksPlaced)
-                    self.player4.merge_networks(self.player1.tracksPlaced)
-                if edge in self.player5.tracksPlaced:
-                    self.player1.merge_networks(self.player5.tracksPlaced)
-                    self.player5.merge_networks(self.player1.tracksPlaced)
-                if edge in self.player6.tracksPlaced:
-                    self.player1.merge_networks(self.player6.tracksPlaced)
-                    self.player6.merge_networks(self.player1.tracksPlaced)
+                if edge:
+                    if edge in self.player2.tracksPlaced:
+                        self.player1.merge_networks(self.player2.tracksPlaced)
+                        self.player2.merge_networks(self.player1.tracksPlaced)
+                    if edge in self.player3.tracksPlaced:
+                        self.player1.merge_networks(self.player3.tracksPlaced)
+                        self.player3.merge_networks(self.player1.tracksPlaced)
+                    if edge in self.player4.tracksPlaced:
+                        self.player1.merge_networks(self.player4.tracksPlaced)
+                        self.player4.merge_networks(self.player1.tracksPlaced)
+                    if edge in self.player5.tracksPlaced:
+                        self.player1.merge_networks(self.player5.tracksPlaced)
+                        self.player5.merge_networks(self.player1.tracksPlaced)
+                    if edge in self.player6.tracksPlaced:
+                        self.player1.merge_networks(self.player6.tracksPlaced)
+                        self.player6.merge_networks(self.player1.tracksPlaced)
 
-            if self.player1.won:
-                self.winner = True
-                self.winnerPlayer = 1
-                self.genomes[0].fitness += 1
-                break
+            self.check_city_captures()
+            self.check_for_winners()
 
         while self.player2.tracksToPlace != 0 and not self.winner:
             move2 = self.player2.make_move(self.player2.create_network_inputs(self.player2.find_all_possible_moves()))
-            if move2 == ValueError:
-                self.genomes[1].fitness -= 1
-                return False
-            self.update_board(self.player2.currentBoard)
-            if move2[2] == 1:
-                self.genomes[1].fitness -= 0.01
-            elif move2[2] == 2:
-                self.genomes[1].fitness -= 0.02
+            if move2 is not None:
+                self.update_board(self.player2.currentBoard)
+                if move2[1] == 1:
+                    self.genomes[1].fitness -= 0.01
+                elif move2[1] == 2:
+                    self.genomes[1].fitness -= 0.02
 
-            edge = self.player2.check_network_merge()
+                edge = self.player2.check_network_merge()
 
-            if edge:
-                if edge in self.player1.tracksPlaced:
-                    self.player2.merge_networks(self.player1.tracksPlaced)
-                    self.player1.merge_networks(self.player2.tracksPlaced)
-                if edge in self.player3.tracksPlaced:
-                    self.player2.merge_networks(self.player3.tracksPlaced)
-                    self.player3.merge_networks(self.player2.tracksPlaced)
-                if edge in self.player4.tracksPlaced:
-                    self.player2.merge_networks(self.player4.tracksPlaced)
-                    self.player4.merge_networks(self.player2.tracksPlaced)
-                if edge in self.player5.tracksPlaced:
-                    self.player2.merge_networks(self.player5.tracksPlaced)
-                    self.player5.merge_networks(self.player2.tracksPlaced)
-                if edge in self.player6.tracksPlaced:
-                    self.player2.merge_networks(self.player6.tracksPlaced)
-                    self.player6.merge_networks(self.player2.tracksPlaced)
+                if edge:
+                    if edge in self.player1.tracksPlaced:
+                        self.player2.merge_networks(self.player1.tracksPlaced)
+                        self.player1.merge_networks(self.player2.tracksPlaced)
+                    if edge in self.player3.tracksPlaced:
+                        self.player2.merge_networks(self.player3.tracksPlaced)
+                        self.player3.merge_networks(self.player2.tracksPlaced)
+                    if edge in self.player4.tracksPlaced:
+                        self.player2.merge_networks(self.player4.tracksPlaced)
+                        self.player4.merge_networks(self.player2.tracksPlaced)
+                    if edge in self.player5.tracksPlaced:
+                        self.player2.merge_networks(self.player5.tracksPlaced)
+                        self.player5.merge_networks(self.player2.tracksPlaced)
+                    if edge in self.player6.tracksPlaced:
+                        self.player2.merge_networks(self.player6.tracksPlaced)
+                        self.player6.merge_networks(self.player2.tracksPlaced)
 
-            if self.player2.won:
-                self.winner = True
-                self.winnerPlayer = 2
-                self.genomes[1].fitness += 1
-                break
+            self.check_city_captures()
+            self.check_for_winners()
 
         while self.player3.tracksToPlace != 0 and not self.winner:
             move3 = self.player3.make_move(self.player3.create_network_inputs(self.player3.find_all_possible_moves()))
-            if move3 == ValueError:
-                self.genomes[2].fitness -= 1
-                return False
-            self.update_board(self.player3.currentBoard)
-            if move3[2] == 1:
-                self.genomes[2].fitness -= 0.01
-            elif move3[2] == 2:
-                self.genomes[2].fitness -= 0.02
+            if move3 is not None:
+                self.update_board(self.player3.currentBoard)
+                if move3[1] == 1:
+                    self.genomes[2].fitness -= 0.01
+                elif move3[1] == 2:
+                    self.genomes[2].fitness -= 0.02
 
-            edge = self.player3.check_network_merge()
+                edge = self.player3.check_network_merge()
 
-            if edge:
-                if edge in self.player1.tracksPlaced:
-                    self.player3.merge_networks(self.player1.tracksPlaced)
-                    self.player1.merge_networks(self.player3.tracksPlaced)
-                if edge in self.player2.tracksPlaced:
-                    self.player3.merge_networks(self.player2.tracksPlaced)
-                    self.player2.merge_networks(self.player3.tracksPlaced)
-                if edge in self.player4.tracksPlaced:
-                    self.player3.merge_networks(self.player4.tracksPlaced)
-                    self.player4.merge_networks(self.player3.tracksPlaced)
-                if edge in self.player5.tracksPlaced:
-                    self.player3.merge_networks(self.player5.tracksPlaced)
-                    self.player5.merge_networks(self.player3.tracksPlaced)
-                if edge in self.player6.tracksPlaced:
-                    self.player3.merge_networks(self.player6.tracksPlaced)
-                    self.player6.merge_networks(self.player3.tracksPlaced)
+                if edge:
+                    if edge in self.player1.tracksPlaced:
+                        self.player3.merge_networks(self.player1.tracksPlaced)
+                        self.player1.merge_networks(self.player3.tracksPlaced)
+                    if edge in self.player2.tracksPlaced:
+                        self.player3.merge_networks(self.player2.tracksPlaced)
+                        self.player2.merge_networks(self.player3.tracksPlaced)
+                    if edge in self.player4.tracksPlaced:
+                        self.player3.merge_networks(self.player4.tracksPlaced)
+                        self.player4.merge_networks(self.player3.tracksPlaced)
+                    if edge in self.player5.tracksPlaced:
+                        self.player3.merge_networks(self.player5.tracksPlaced)
+                        self.player5.merge_networks(self.player3.tracksPlaced)
+                    if edge in self.player6.tracksPlaced:
+                        self.player3.merge_networks(self.player6.tracksPlaced)
+                        self.player6.merge_networks(self.player3.tracksPlaced)
 
-            if self.player3.won:
-                self.winner = True
-                self.winnerPlayer = 3
-                self.genomes[2].fitness += 1
-                break
+            self.check_city_captures()
+            self.check_for_winners()
 
         while self.player4.tracksToPlace != 0 and not self.winner:
             move4 = self.player4.make_move(self.player4.create_network_inputs(self.player4.find_all_possible_moves()))
-            if move4 == ValueError:
-                self.genomes[3].fitness -= 1
-                return False
-            self.update_board(self.player4.currentBoard)
-            if move4[2] == 1:
-                self.genomes[3].fitness -= 0.01
-            elif move4[2] == 2:
-                self.genomes[3].fitness -= 0.02
+            if move4 is not None:
+                self.update_board(self.player4.currentBoard)
+                if move4[1] == 1:
+                    self.genomes[3].fitness -= 0.01
+                elif move4[1] == 2:
+                    self.genomes[3].fitness -= 0.02
 
-            edge = self.player4.check_network_merge()
+                edge = self.player4.check_network_merge()
 
-            if edge:
-                if edge in self.player2.tracksPlaced:
-                    self.player4.merge_networks(self.player2.tracksPlaced)
-                    self.player2.merge_networks(self.player4.tracksPlaced)
-                if edge in self.player3.tracksPlaced:
-                    self.player4.merge_networks(self.player3.tracksPlaced)
-                    self.player3.merge_networks(self.player4.tracksPlaced)
-                if edge in self.player1.tracksPlaced:
-                    self.player4.merge_networks(self.player1.tracksPlaced)
-                    self.player1.merge_networks(self.player4.tracksPlaced)
-                if edge in self.player5.tracksPlaced:
-                    self.player4.merge_networks(self.player5.tracksPlaced)
-                    self.player5.merge_networks(self.player4.tracksPlaced)
-                if edge in self.player6.tracksPlaced:
-                    self.player4.merge_networks(self.player6.tracksPlaced)
-                    self.player6.merge_networks(self.player4.tracksPlaced)
+                if edge:
+                    if edge in self.player2.tracksPlaced:
+                        self.player4.merge_networks(self.player2.tracksPlaced)
+                        self.player2.merge_networks(self.player4.tracksPlaced)
+                    if edge in self.player3.tracksPlaced:
+                        self.player4.merge_networks(self.player3.tracksPlaced)
+                        self.player3.merge_networks(self.player4.tracksPlaced)
+                    if edge in self.player1.tracksPlaced:
+                        self.player4.merge_networks(self.player1.tracksPlaced)
+                        self.player1.merge_networks(self.player4.tracksPlaced)
+                    if edge in self.player5.tracksPlaced:
+                        self.player4.merge_networks(self.player5.tracksPlaced)
+                        self.player5.merge_networks(self.player4.tracksPlaced)
+                    if edge in self.player6.tracksPlaced:
+                        self.player4.merge_networks(self.player6.tracksPlaced)
+                        self.player6.merge_networks(self.player4.tracksPlaced)
 
-            if self.player4.won:
-                self.winner = True
-                self.winnerPlayer = 4
-                self.genomes[3].fitness += 1
-                break
+            self.check_city_captures()
+            self.check_for_winners()
 
         while self.player5.tracksToPlace != 0 and not self.winner:
             move5 = self.player5.make_move(self.player5.create_network_inputs(self.player5.find_all_possible_moves()))
-            if move5 == ValueError:
-                self.genomes[4].fitness -= 1
-                return False
-            self.update_board(self.player5.currentBoard)
-            if move5[2] == 1:
-                self.genomes[4].fitness -= 0.01
-            elif move5[2] == 2:
-                self.genomes[4].fitness -= 0.02
+            if move5 is not None:
+                self.update_board(self.player5.currentBoard)
+                if move5[1] == 1:
+                    self.genomes[4].fitness -= 0.01
+                elif move5[1] == 2:
+                    self.genomes[4].fitness -= 0.02
 
-            edge = self.player5.check_network_merge()
+                edge = self.player5.check_network_merge()
 
-            if edge:
-                if edge in self.player2.tracksPlaced:
-                    self.player5.merge_networks(self.player2.tracksPlaced)
-                    self.player2.merge_networks(self.player5.tracksPlaced)
-                if edge in self.player3.tracksPlaced:
-                    self.player5.merge_networks(self.player3.tracksPlaced)
-                    self.player3.merge_networks(self.player5.tracksPlaced)
-                if edge in self.player4.tracksPlaced:
-                    self.player5.merge_networks(self.player4.tracksPlaced)
-                    self.player4.merge_networks(self.player5.tracksPlaced)
-                if edge in self.player1.tracksPlaced:
-                    self.player5.merge_networks(self.player1.tracksPlaced)
-                    self.player1.merge_networks(self.player5.tracksPlaced)
-                if edge in self.player6.tracksPlaced:
-                    self.player5.merge_networks(self.player6.tracksPlaced)
-                    self.player6.merge_networks(self.player5.tracksPlaced)
+                if edge:
+                    if edge in self.player2.tracksPlaced:
+                        self.player5.merge_networks(self.player2.tracksPlaced)
+                        self.player2.merge_networks(self.player5.tracksPlaced)
+                    if edge in self.player3.tracksPlaced:
+                        self.player5.merge_networks(self.player3.tracksPlaced)
+                        self.player3.merge_networks(self.player5.tracksPlaced)
+                    if edge in self.player4.tracksPlaced:
+                        self.player5.merge_networks(self.player4.tracksPlaced)
+                        self.player4.merge_networks(self.player5.tracksPlaced)
+                    if edge in self.player1.tracksPlaced:
+                        self.player5.merge_networks(self.player1.tracksPlaced)
+                        self.player1.merge_networks(self.player5.tracksPlaced)
+                    if edge in self.player6.tracksPlaced:
+                        self.player5.merge_networks(self.player6.tracksPlaced)
+                        self.player6.merge_networks(self.player5.tracksPlaced)
 
-            if self.player5.won:
-                self.winner = True
-                self.winnerPlayer = 5
-                self.genomes[4].fitness += 1
-                break
+            self.check_city_captures()
+            self.check_for_winners()
 
         while self.player6.tracksToPlace != 0 and not self.winner:
             move6 = self.player6.make_move(self.player6.create_network_inputs(self.player6.find_all_possible_moves()))
-            if move6 == ValueError:
-                self.genomes[5].fitness -= 1
-                return False
-            self.update_board(self.player6.currentBoard)
-            if move6[2] == 1:
-                self.genomes[5].fitness -= 0.01
-            elif move6[2] == 2:
-                self.genomes[5].fitness -= 0.02
+            if move6 is not None:
+                self.update_board(self.player6.currentBoard)
+                if move6[1] == 1:
+                    self.genomes[5].fitness -= 0.01
+                elif move6[1] == 2:
+                    self.genomes[5].fitness -= 0.02
 
-            edge = self.player6.check_network_merge()
+                edge = self.player6.check_network_merge()
 
-            if edge:
-                if edge in self.player2.tracksPlaced:
-                    self.player6.merge_networks(self.player2.tracksPlaced)
-                    self.player2.merge_networks(self.player6.tracksPlaced)
-                if edge in self.player3.tracksPlaced:
-                    self.player6.merge_networks(self.player3.tracksPlaced)
-                    self.player3.merge_networks(self.player6.tracksPlaced)
-                if edge in self.player4.tracksPlaced:
-                    self.player6.merge_networks(self.player4.tracksPlaced)
-                    self.player4.merge_networks(self.player6.tracksPlaced)
-                if edge in self.player5.tracksPlaced:
-                    self.player6.merge_networks(self.player5.tracksPlaced)
-                    self.player5.merge_networks(self.player6.tracksPlaced)
-                if edge in self.player1.tracksPlaced:
-                    self.player6.merge_networks(self.player1.tracksPlaced)
-                    self.player1.merge_networks(self.player6.tracksPlaced)
+                if edge:
+                    if edge in self.player2.tracksPlaced:
+                        self.player6.merge_networks(self.player2.tracksPlaced)
+                        self.player2.merge_networks(self.player6.tracksPlaced)
+                    if edge in self.player3.tracksPlaced:
+                        self.player6.merge_networks(self.player3.tracksPlaced)
+                        self.player3.merge_networks(self.player6.tracksPlaced)
+                    if edge in self.player4.tracksPlaced:
+                        self.player6.merge_networks(self.player4.tracksPlaced)
+                        self.player4.merge_networks(self.player6.tracksPlaced)
+                    if edge in self.player5.tracksPlaced:
+                        self.player6.merge_networks(self.player5.tracksPlaced)
+                        self.player5.merge_networks(self.player6.tracksPlaced)
+                    if edge in self.player1.tracksPlaced:
+                        self.player6.merge_networks(self.player1.tracksPlaced)
+                        self.player1.merge_networks(self.player6.tracksPlaced)
 
-            if self.player6.won:
-                self.winner = True
-                self.winnerPlayer = 6
-                self.genomes[5].fitness += 1
-                break
+            self.check_city_captures()
+            self.check_for_winners()
 
         if self.winner:
             print("Winner found!\nWinner: Player {0}".format(str(self.winnerPlayer)))
 
-            # self.genomes[0].fitness += ((5 - len(self.player1.citiesToCapture)) * 2 / 10)
-            # self.genomes[1].fitness += ((5 - len(self.player2.citiesToCapture)) * 2 / 10)
-            # self.genomes[2].fitness += ((5 - len(self.player3.citiesToCapture)) * 2 / 10)
-            # self.genomes[3].fitness += ((5 - len(self.player4.citiesToCapture)) * 2 / 10)
-            # self.genomes[4].fitness += ((5 - len(self.player5.citiesToCapture)) * 2 / 10)
-            # self.genomes[5].fitness += ((5 - len(self.player6.citiesToCapture)) * 2 / 10)
+            self.genomes[0].fitness += ((5 - len(self.player1.citiesToCapture)) * 2 / 10)
+            self.genomes[1].fitness += ((5 - len(self.player2.citiesToCapture)) * 2 / 10)
+            self.genomes[2].fitness += ((5 - len(self.player3.citiesToCapture)) * 2 / 10)
+            self.genomes[3].fitness += ((5 - len(self.player4.citiesToCapture)) * 2 / 10)
+            self.genomes[4].fitness += ((5 - len(self.player5.citiesToCapture)) * 2 / 10)
+            self.genomes[5].fitness += ((5 - len(self.player6.citiesToCapture)) * 2 / 10)
 
             # self.city_distance_fitness(self.player1, 0)
             # self.city_distance_fitness(self.player2, 1)
@@ -309,29 +283,33 @@ class TransEuropaGame:
         self.player5.update_player_board_view(board)
         self.player6.update_player_board_view(board)
 
-    # def city_distance_fitness(self, player, player_number):
-    #     cityDistances = []
-    #     cityStartEnd = []
-    #     if len(player.citiesToCapture) != 0:
-    #         for city in player.citiesToCapture:
-    #             temp = []
-    #             temp1 = []
-    #             for city_track in city[1]:
-    #                 temp2 = []
-    #                 start_end = []
-    #                 for track in player.tracksPlaced:
-    #                     temp2.append((abs(city_track[0] - track[0]) + abs(city_track[1] - track[1])))
-    #                     start_end.append([track, city_track])
-    #                 temp.append(start_end[temp2.index(min(temp2))])
-    #                 temp1.append(min(temp2))
-    #             cityDistances.append(min(temp1))
-    #             cityStartEnd.append(temp[temp1.index(min(temp1))])
-    #         total = 0
-    #         for i in cityDistances:
-    #             total += i
-    #         self.genomes[player_number].fitness -= (total / 100)
-    #     else:
-    #         pass
+    def check_city_captures(self):
+        self.player1.city_capture_validation()
+        self.player2.city_capture_validation()
+        self.player3.city_capture_validation()
+        self.player4.city_capture_validation()
+        self.player5.city_capture_validation()
+        self.player6.city_capture_validation()
+
+    def check_for_winners(self):
+        if self.player1.won:
+            self.winner = True
+            self.winnerPlayer = 1
+        if self.player2.won:
+            self.winner = True
+            self.winnerPlayer = 2
+        if self.player3.won:
+            self.winner = True
+            self.winnerPlayer = 3
+        if self.player4.won:
+            self.winner = True
+            self.winnerPlayer = 4
+        if self.player5.won:
+            self.winner = True
+            self.winnerPlayer = 5
+        if self.player6.won:
+            self.winner = True
+            self.winnerPlayer = 6
 
 
 def eval_genomes(genomes, conf):
@@ -363,7 +341,7 @@ def eval_genomes(genomes, conf):
                 genome.fitness = temp_genome.fitness
                 fitness.append(genome.fitness)
 
-            file = open("fitnessDataTest2", 'a')
+            file = open("fitnessDataTest", 'a')
             file.write(str(max(fitness)) + "\n")
             file.close()
             break
@@ -420,6 +398,8 @@ def run_neat(conf):
     pop.add_reporter(neat.Checkpointer(1))
 
     best_genome = pop.run(eval_genomes, GENERATIONS)
+    with open("best.pickle", "wb") as file:
+        pickle.dump(best_genome, file)
     final_match(best_genome, conf)
 
 
