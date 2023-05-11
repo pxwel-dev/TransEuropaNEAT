@@ -1,0 +1,40 @@
+ImpMaxN-1 vs ImpMaxN-2 (4 Players): [449, 551]
+ImpMaxN-1 vs ImpMaxN-2 (6 Players): [558, 442]
+ImpMaxN-1 vs ImpMaxN-2 vs ImpMaxN-3 (3 Players): [339, 332, 329]
+ImpMaxN-1 vs ImpMaxN-2 vs ImpMaxN-3 (6 Players): [364, 326, 310]
+
+NEAT players 1v1v1v1v1v1: [197, 178, 136, 168, 131, 190]
+
+ImpMaxN-1 vs NEAT-SIMPLE (4 Players): [513, 487]
+ImpMaxN-2 vs NEAT-SIMPLE (4 Players): [487, 513]
+ImpMaxN-1 vs NEAT-SIMPLE (6 Players): [497, 503]
+ImpMaxN-2 vs NEAT-SIMPLE (6 Players): [478, 522]
+
+ImpMaxN-1 vs NEAT-SIMPLEv2 (4 Players): [511, 489]
+ImpMaxN-2 vs NEAT-SIMPLEv2 (4 Players): [488, 512]
+ImpMaxN-1 vs NEAT-SIMPLEv2 (6 Players): [503, 497]
+ImpMaxN-2 vs NEAT-SIMPLEv2 (6 Players): [458, 542]
+
+ImpMaxN-1 vs NEAT-SIMPLEv3 (4 Players): [562, 438]
+ImpMaxN-2 vs NEAT-SIMPLEv3 (4 Players): [539, 461]
+ImpMaxN-1 vs NEAT-SIMPLEv3 (6 Players): [524, 476]
+ImpMaxN-2 vs NEAT-SIMPLEv3 (6 Players): [554, 446]
+
+ImpMaxN-1 vs NEAT-SIMPLEv4 (4 Players): [491, 509]
+ImpMaxN-2 vs NEAT-SIMPLEv4 (4 Players): [473, 527]
+ImpMaxN-3 vs NEAT-SIMPLEv4 (4 Players): [479, 521]
+ImpMaxN-1 vs NEAT-SIMPLEv4 (6 Players): [492, 508]
+ImpMaxN-2 vs NEAT-SIMPLEv4 (6 Players): [472, 528]
+ImpMaxN-3 vs NEAT-SIMPLEv4 (6 Players): [480, 520]
+
+ImpMaxN-1 vs NEAT-SIMPLEv5 (4 Players): [545, 455]
+ImpMaxN-2 vs NEAT-SIMPLEv5 (4 Players): [547, 453]
+ImpMaxN-1 vs NEAT-SIMPLEv5 (6 Players): [567, 433]
+ImpMaxN-2 vs NEAT-SIMPLEv5 (6 Players): [555, 445]
+
+ImpMaxN-1 vs NEAT-SIMPLEv6 (4 Players): [505, 495]
+ImpMaxN-2 vs NEAT-SIMPLEv6 (4 Players): [504, 496]
+ImpMaxN-3 vs NEAT-SIMPLEv6 (4 Players): [509, 491]
+ImpMaxN-1 vs NEAT-SIMPLEv6 (6 Players): [497, 503]
+ImpMaxN-2 vs NEAT-SIMPLEv6 (6 Players): [478, 522]
+ImpMaxN-3 vs NEAT-SIMPLEv6 (6 Players): [471, 529]
