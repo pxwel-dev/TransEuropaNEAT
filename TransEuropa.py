@@ -81,7 +81,7 @@ class TransEuropa:
 		fitnessScore = []
 		for player in self.__board.get_players():
 			if isinstance(player, NEATPlayer):
-				print("Neural Network Cities Left: \n ", [city.get_name() for city in player.citiesToCapture])
+				# print("Neural Network Cities Left: \n ", [city.get_name() for city in player.citiesToCapture])
 				fitnessScore.append(player.fitness)
 		return fitnessScore
 

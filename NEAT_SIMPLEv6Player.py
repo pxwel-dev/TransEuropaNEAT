@@ -263,8 +263,8 @@ class NEATPlayer(Player):
                     elif cost == 2 and self.tracksToPlace - 2 == 0:
                         self.tracksToPlace -= 2
                         self.fitness -= 0.02
-                        print("{0} Move: {1} -> {2}"
-                              .format(self.name, str(choice[1].get_id()), str(choice[0].get_id())))
+                        # print("{0} Move: {1} -> {2}"
+                        #       .format(self.name, str(choice[1].get_id()), str(choice[0].get_id())))
                         break
                     else:
                         if len(outputs) > 1:
@@ -276,8 +276,8 @@ class NEATPlayer(Player):
                             # print("NO MOVES LEFT: TTP: {0} T: {1} MOVES: {2}".format(self.tracksToPlace, cost, [i[6] for i in temp]))
                             return None
                 else:
-                    print("{0} City Captured: {1}"
-                          .format(self.name, str(choice[1].get_name())))
+                    # print("{0} City Captured: {1}"
+                    #       .format(self.name, str(choice[1].get_name())))
                     break
             if self.has_won():
                 return 'w'
@@ -305,8 +305,8 @@ class NEATPlayer(Player):
     def has_won(self):
         for city in self.citiesToCapture:
             if city in self.get_network().nodes:
-                print("{0} has captured: {1}"
-                      .format(self.name, str(city.get_name())))
+                # print("{0} has captured: {1}"
+                #       .format(self.name, str(city.get_name())))
                 self.capturedCityCols.append(city.get_colour())
                 self.citiesToCapture.remove(city)
                 self.fitness += 0.2

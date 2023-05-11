@@ -20,12 +20,12 @@ def neat_v4_vs_v6(confV4):
     f = open("NEAT-SIMPLEv6.pickle", "rb")
     simpleV6 = pickle.load(f)
 
-    pool = Pool(processes=6)
+    pool = Pool(processes=4)
 
-    p1 = pool.apply_async(func=neural_network_battle_4players, args=(confV4))
-    p2 = pool.apply_async(func=neural_network_battle_4players, args=(confV4))
-    p3 = pool.apply_async(func=neural_network_battle_6players, args=(confV4))
-    p4 = pool.apply_async(func=neural_network_battle_6players, args=(confV4))
+    p1 = pool.apply_async(func=neural_network_battle_4players, args=(confV4,))
+    p2 = pool.apply_async(func=neural_network_battle_4players, args=(confV4,))
+    p3 = pool.apply_async(func=neural_network_battle_6players, args=(confV4,))
+    p4 = pool.apply_async(func=neural_network_battle_6players, args=(confV4,))
 
     pool.close()
     pool.join()
@@ -435,3 +435,4 @@ if __name__ == "__main__":
     # imp_max_n_battle()
     # neat_v6_vs_imp_max_n(configV4)
     # final_tests_for_poster(config, configV2, configV3, configV4)
+    neat_v4_vs_v6(configV4)
