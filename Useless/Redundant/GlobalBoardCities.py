@@ -1,6 +1,6 @@
 import csv
 import random
-from FindNeighboursCorrected import FindNeighbours
+from Useless.Redundant.FindNeighboursCorrected import FindNeighbours
 
 
 class Board:
@@ -22,13 +22,9 @@ class Board:
                         self.board[i][j] = -1
                     elif self.board[i][j] == 2:
                         self.board[i][j] = -2
-                    else:
-                        pass
                     edgeNeighbours = FindNeighbours(self.board)
                     edgeNeighbours.test_neighbouring_edges(i, j)
                     self.boardEdgeNeighbours.append([self.board[i][j], list([i, j]), edgeNeighbours.neighbours])
-                else:
-                    pass
 
         self.yellowCities = {
             'Glasgow': [[0, 3], [0, 4], [1, 8], [1, 9]],
@@ -77,6 +73,7 @@ class Board:
         }
 
     def init_player_cities(self):
+        random.seed(random)
         yellow = random.choice(list(self.yellowCities.keys()))
         red = random.choice(list(self.redCities.keys()))
         orange = random.choice(list(self.orangeCities.keys()))

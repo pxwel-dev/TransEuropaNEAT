@@ -6,10 +6,8 @@ from multiprocessing import Pool
 import numpy as np
 import pickle
 
-from PlayerBoardCities import Player
-from GlobalBoardCities import Board
-
-
+from Useless.Redundant.PlayerBoardCities import Player
+from Useless.Redundant.GlobalBoardCities import Board
 
 
 POP_SIZE = 72
@@ -251,7 +249,7 @@ class TransEuropaGame:
             self.check_for_winners()
 
         if self.winner:
-            print("Winner found!\nWinner: Player {0}".format(str(self.winnerPlayer)))
+            print("Round {0} | Winner found! | Winner: Player {1}".format(str(self.round), str(self.winnerPlayer)))
 
             self.genomes[0].fitness += ((5 - len(self.player1.citiesToCapture)) * 2 / 10)
             self.genomes[1].fitness += ((5 - len(self.player2.citiesToCapture)) * 2 / 10)
@@ -259,18 +257,6 @@ class TransEuropaGame:
             self.genomes[3].fitness += ((5 - len(self.player4.citiesToCapture)) * 2 / 10)
             self.genomes[4].fitness += ((5 - len(self.player5.citiesToCapture)) * 2 / 10)
             self.genomes[5].fitness += ((5 - len(self.player6.citiesToCapture)) * 2 / 10)
-
-            # self.city_distance_fitness(self.player1, 0)
-            # self.city_distance_fitness(self.player2, 1)
-            # self.city_distance_fitness(self.player3, 2)
-            # self.city_distance_fitness(self.player4, 3)
-            # self.city_distance_fitness(self.player5, 4)
-            # self.city_distance_fitness(self.player6, 5)
-
-            # for i in range(1, 7):
-            #     if i != self.winnerPlayer:
-            #         self.genomes[i-1].fitness -= 1
-
             return False
         else:
             return True
@@ -341,7 +327,7 @@ def eval_genomes(genomes, conf):
                 genome.fitness = temp_genome.fitness
                 fitness.append(genome.fitness)
 
-            file = open("fitnessDataTest", 'a')
+            file = open("../../fitnessDataTest", 'a')
             file.write(str(max(fitness)) + "\n")
             file.close()
             break
@@ -390,7 +376,7 @@ def final_match(best_player, conf):
 
 
 def run_neat(conf):
-    # pop = neat.Checkpointer.restore_checkpoint('neat-checkpoint-99')
+    #pop = neat.Checkpointer.restore_checkpoint('neat-checkpoint-36')
     pop = neat.Population(conf)
     pop.add_reporter(neat.StdOutReporter(True))
     stats = neat.StatisticsReporter()
@@ -405,10 +391,33 @@ def run_neat(conf):
 
 if __name__ == "__main__":
     local_dir = os.path.dirname(__file__)
-    config_path = os.path.join(local_dir, "NEATconfig.txt")
+    config_path = os.path.join(local_dir, "../../NEATconfig.txt")
 
     config = neat.Config(neat.DefaultGenome, neat.DefaultReproduction,
                          neat.DefaultSpeciesSet, neat.DefaultStagnation,
                          config_path)
 
     run_neat(config)
+
+    # board = Board()
+    # player = Player(board, None, None, None)
+    #
+    # for i in range(0, len(player.currentBoard)):
+    #     for j in range(0, len(player.currentBoard[i])):
+    #         for k in range(0, len(player.currentBoard)):
+    #             for l in range(0, len(player.currentBoard[k])):
+    #                 try:
+    #                     if player.currentBoard[i][j] != '*' and player.currentBoard[k][l] != '*' and [i, j] != [k, l]:
+    #                         file = open("AllEdgeDistances", 'a')
+    #                         # route = player.astar_pathfinding([i, j], [k, l])
+    #                         # dist = 0
+    #                         # for edge in route:
+    #                         #     dist += abs(player.find_track_details(edge)[0])
+    #                         #player.find_estimated_distance([i, j], [k, l])
+    #                         dist = player.find_shortest_path([i, j], [k, l], 0, [], player.find_estimated_distance([i, j], [k, l]))
+    #                         file.write(str([[i, j], [k, l], dist]) + '\n')
+    #                         print("Completed: {0} to {1}".format([i, j], [k, l]))
+    #                         file.close()
+    #                 except TypeError:
+    #                     pass
+
