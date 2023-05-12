@@ -23,10 +23,10 @@ class FindNeighbours:
         if boardRow % 2 == 0:
             temp = edgeIndex * 2
             if boardRow == 0:
-                self.test_edge(boardRow, 1, temp, -1)
                 self.test_edge(boardRow, 1, temp, 0)
                 self.test_edge(boardRow, 1, temp, 1)
                 self.test_edge(boardRow, 1, temp, 2)
+                self.test_edge(boardRow, 1, temp, 3)
 
                 self.test_edge(boardRow, 0, edgeIndex, -1)
                 self.test_edge(boardRow, 0, edgeIndex, 1)
@@ -40,6 +40,19 @@ class FindNeighbours:
                 self.test_edge(boardRow, 0, edgeIndex, -1)
                 self.test_edge(boardRow, 0, edgeIndex, 1)
 
+            elif boardRow == 4 or boardRow == 8 or boardRow == 12 or boardRow == 16 or boardRow == 20 or boardRow == 24:
+                self.test_edge(boardRow, -1, temp, 0)
+                self.test_edge(boardRow, -1, temp, 1)
+                self.test_edge(boardRow, -1, temp, 2)
+                self.test_edge(boardRow, -1, temp, 3)
+
+                self.test_edge(boardRow, 1, temp, 0)
+                self.test_edge(boardRow, 1, temp, 1)
+                self.test_edge(boardRow, 1, temp, 2)
+                self.test_edge(boardRow, 1, temp, 3)
+
+                self.test_edge(boardRow, 0, edgeIndex, 1)
+                self.test_edge(boardRow, 0, edgeIndex, -1)
             else:
                 self.test_edge(boardRow, -1, temp, -1)
                 self.test_edge(boardRow, -1, temp, 0)

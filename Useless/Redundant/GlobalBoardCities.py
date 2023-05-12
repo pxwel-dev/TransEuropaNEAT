@@ -1,6 +1,6 @@
 import csv
 import random
-from FindNeighboursCorrected import FindNeighbours
+from Useless.Redundant.FindNeighboursCorrected import FindNeighbours
 
 
 class Board:
@@ -22,13 +22,9 @@ class Board:
                         self.board[i][j] = -1
                     elif self.board[i][j] == 2:
                         self.board[i][j] = -2
-                    else:
-                        pass
                     edgeNeighbours = FindNeighbours(self.board)
                     edgeNeighbours.test_neighbouring_edges(i, j)
                     self.boardEdgeNeighbours.append([self.board[i][j], list([i, j]), edgeNeighbours.neighbours])
-                else:
-                    pass
 
         self.yellowCities = {
             'Glasgow': [[0, 3], [0, 4], [1, 8], [1, 9]],
@@ -36,7 +32,7 @@ class Board:
             'Stockholm': [[0, 8], [0, 9], [1, 18], [1, 19]],
             'Helsinki': [[0, 10], [0, 11], [1, 22], [1, 23]],
             'StPeter': [[0, 12], [0, 13], [1, 26], [1, 27]],
-            'Malmo': [[3, 17], [3, 18], [4, 7], [4, 8], [5, 16], [5, 17]],
+            'Malmo': [[3, 16], [3, 17], [4, 7], [4, 8], [5, 16], [5, 17]],
             'Moscow': [[3, 30], [4, 14], [5, 30], [5, 31]]
         }
         self.redCities = {
@@ -72,11 +68,12 @@ class Board:
             'Sofia': [[21, 23], [21, 24], [22, 11], [22, 12], [23, 23], [23, 24]],
             'Rome': [[23, 14], [23, 15], [24, 6], [24, 7], [25, 14], [25, 15]],
             'Tirana': [[23, 18], [23, 19], [24, 8], [24, 9], [25, 18], [25, 19]],
-            'Istanbul': [[23, 26], [23, 27], [24, 13], [24, 15], [25, 26], [25, 27]],
+            'Istanbul': [[23, 26], [23, 27], [24, 12], [24, 13], [25, 26], [25, 27]],
             'Thessaloniki': [[25, 23], [25, 24], [26, 11], [26, 12]]
         }
 
     def init_player_cities(self):
+        random.seed(random)
         yellow = random.choice(list(self.yellowCities.keys()))
         red = random.choice(list(self.redCities.keys()))
         orange = random.choice(list(self.orangeCities.keys()))
