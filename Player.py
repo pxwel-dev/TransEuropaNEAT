@@ -10,6 +10,7 @@ class Player:
 	def __init__(self, name):
 		self.name = name
 		self.tracksToPlace = 2
+		self.colouredTracks = 3
 		self.fitness = 0
 		self.capturedCityCols = []
 		self._network = Graph()
