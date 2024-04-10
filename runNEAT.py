@@ -1,16 +1,8 @@
-import copy
 import random
 
 from HumanPlayer import HumanPlayer
-from NEAT_SIMPLEv6Player import NEATPlayer as NEAT_SIMPLEv6
-from NEAT_SIMPLEv5Player import NEATPlayer as NEAT_SIMPLEv5
-from NEAT_SIMPLEv4Player import NEATPlayer as NEAT_SIMPLEv4
-from NEAT_SIMPLEv3Player import NEATPlayer as NEAT_SIMPLEv3
-from NEAT_SIMPLEv2Player import NEATPlayer as NEAT_SIMPLEv2
-from NEAT_SIMPLEPlayer import NEATPlayer as NEAT_SIMPLE
-from ImperfectMaxN import ImpMaxNPlayer
-from ImperfectMaxNv2 import ImpMaxNPlayer as ImpMaxNPlayerV2
-from ImperfectMaxNv3 import ImpMaxNPlayer as ImpMaxNPlayerV3
+from AllBots.NEAT_SIMPLEv4Player import NEATPlayer as NEAT_SIMPLEv4
+from AllBots.NEAT_SIMPLEPlayer import NEATPlayer as NEAT_SIMPLE
 from TransEuropa import TransEuropa
 import neat
 import os
@@ -53,7 +45,7 @@ def eval_genomes(genomes, conf):
                 genome.fitness = temp_genome.fitness
                 fitness.append(genome.fitness)
 
-            file = open("fitnessDataTest", 'a')
+            file = open("AllBots/fitnessDataTest", 'a')
             file.write(str(max(fitness)) + "\n")
             file.close()
             break
@@ -121,7 +113,7 @@ def multiprocessing_eval(genomes, conf):
     return genomes
 
 def test_best_network(conf):
-    f = open("NEAT-SIMPLEv6.pickle", "rb")
+    f = open("AllBots/NEAT-SIMPLEv6.pickle", "rb")
     best_player = pickle.load(f)
     game = TransEuropa([NEAT_SIMPLEv4("NeuralNetwork", neat.nn.FeedForwardNetwork.create(best_player, conf)), HumanPlayer("Pawel")], "classic.txt")
     game.play_game()

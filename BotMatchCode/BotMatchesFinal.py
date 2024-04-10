@@ -1,12 +1,8 @@
-from NEAT_SIMPLEv6Player import NEATPlayer as NEAT_SIMPLEv6
-from NEAT_SIMPLEv5Player import NEATPlayer as NEAT_SIMPLEv5
-from NEAT_SIMPLEv4Player import NEATPlayer as NEAT_SIMPLEv4
-from NEAT_SIMPLEv3Player import NEATPlayer as NEAT_SIMPLEv3
-from NEAT_SIMPLEv2Player import NEATPlayer as NEAT_SIMPLEv2
-from NEAT_SIMPLEPlayer import NEATPlayer as NEAT_SIMPLE
-from ImperfectMaxN import ImpMaxNPlayer
-from ImperfectMaxNv2 import ImpMaxNPlayer as ImpMaxNPlayerV2
-from ImperfectMaxNv3 import ImpMaxNPlayer as ImpMaxNPlayerV3
+from AllBots.NEAT_SIMPLEv6Player import NEATPlayer as NEAT_SIMPLEv6
+from AllBots.NEAT_SIMPLEv4Player import NEATPlayer as NEAT_SIMPLEv4
+from AllBots.ImperfectMaxN import ImpMaxNPlayer
+from AllBots.ImperfectMaxNv2 import ImpMaxNPlayer as ImpMaxNPlayerV2
+from AllBots.ImperfectMaxNv3 import ImpMaxNPlayer as ImpMaxNPlayerV3
 from TransEuropa import TransEuropa
 import neat
 import os
@@ -15,9 +11,9 @@ import pickle
 
 
 def neat_v4_vs_v6(confV4):
-    f = open("NEAT-SIMPLEv4.pickle", "rb")
+    f = open("../AllBots/NEAT-SIMPLEv4.pickle", "rb")
     simpleV4 = pickle.load(f)
-    f = open("NEAT-SIMPLEv6.pickle", "rb")
+    f = open("../AllBots/NEAT-SIMPLEv6.pickle", "rb")
     simpleV6 = pickle.load(f)
 
     pool = Pool(processes=4)
@@ -55,9 +51,9 @@ def neat_v4_vs_v6(confV4):
 
 
 def neural_network_battle_4players(confV4):
-    f = open("NEAT-SIMPLEv4.pickle", "rb")
+    f = open("../AllBots/NEAT-SIMPLEv4.pickle", "rb")
     simpleV4 = pickle.load(f)
-    f = open("NEAT-SIMPLEv6.pickle", "rb")
+    f = open("../AllBots/NEAT-SIMPLEv6.pickle", "rb")
     simpleV6 = pickle.load(f)
 
     scores = [0, 0]
@@ -70,7 +66,7 @@ def neural_network_battle_4players(confV4):
                                           simpleV6),
                             NEAT_SIMPLEv6("NEAT-SIMPLEv6", neat.nn.FeedForwardNetwork.create(simpleV6, confV4),
                                           simpleV6)]
-                           , "classic.txt")
+                           , "../classic.txt")
         game.play_game()
         if game.get_winner() == "NEAT-SIMPLEv4":
             scores[0] += 1
@@ -83,9 +79,9 @@ def neural_network_battle_4players(confV4):
     return scores
 
 def neural_network_battle_6players(confV4):
-    f = open("NEAT-SIMPLEv4.pickle", "rb")
+    f = open("../AllBots/NEAT-SIMPLEv4.pickle", "rb")
     simpleV4 = pickle.load(f)
-    f = open("NEAT-SIMPLEv6.pickle", "rb")
+    f = open("../AllBots/NEAT-SIMPLEv6.pickle", "rb")
     simpleV6 = pickle.load(f)
 
     scores = [0, 0]
@@ -102,7 +98,7 @@ def neural_network_battle_6players(confV4):
                                           simpleV6),
                             NEAT_SIMPLEv6("NEAT-SIMPLEv6", neat.nn.FeedForwardNetwork.create(simpleV6, confV4),
                                           simpleV6)]
-                           , "classic.txt")
+                           , "../classic.txt")
         game.play_game()
         if game.get_winner() == "NEAT-SIMPLEv4":
             scores[0] += 1
@@ -116,7 +112,7 @@ def neural_network_battle_6players(confV4):
 
 
 def neat_v6_vs_imp_max_n(conf):
-    f = open("NEAT-SIMPLEv6.pickle", "rb")
+    f = open("../AllBots/NEAT-SIMPLEv6.pickle", "rb")
     simpleV6 = pickle.load(f)
 
     pool = Pool(processes=6)
@@ -132,7 +128,7 @@ def neat_v6_vs_imp_max_n(conf):
     pool.join()
 
 def neat_v4_vs_imp_max_n(conf):
-    f = open("NEAT-SIMPLEv4.pickle", "rb")
+    f = open("../AllBots/NEAT-SIMPLEv4.pickle", "rb")
     simpleV4 = pickle.load(f)
 
     pool = Pool(processes=6)
@@ -155,7 +151,7 @@ def imp_max_n1_neat_v6_4(conf, simple):
                             NEAT_SIMPLEv6("NEAT-SIMPLEv6", neat.nn.FeedForwardNetwork.create(simple, conf), simple),
                             ImpMaxNPlayer("ImpMaxN-1"),
                             NEAT_SIMPLEv6("NEAT-SIMPLEv6", neat.nn.FeedForwardNetwork.create(simple, conf), simple)]
-                           , "classic.txt")
+                           , "../classic.txt")
         game.play_game()
         if game.get_winner() == "ImpMaxN-1":
             scores[0] += 1
@@ -177,7 +173,7 @@ def imp_max_n1_neat_v6_6(conf, simple):
                             NEAT_SIMPLEv6("NEAT-SIMPLEv6", neat.nn.FeedForwardNetwork.create(simple, conf), simple),
                             ImpMaxNPlayer("ImpMaxN-1"),
                             NEAT_SIMPLEv6("NEAT-SIMPLEv6", neat.nn.FeedForwardNetwork.create(simple, conf), simple)]
-                           , "classic.txt")
+                           , "../classic.txt")
         game.play_game()
         if game.get_winner() == "ImpMaxN-1":
             scores[0] += 1
@@ -197,7 +193,7 @@ def imp_max_n2_neat_v6_4(conf, simple):
                             NEAT_SIMPLEv6("NEAT-SIMPLEv6", neat.nn.FeedForwardNetwork.create(simple, conf), simple),
                             ImpMaxNPlayerV2("ImpMaxN-2"),
                             NEAT_SIMPLEv6("NEAT-SIMPLEv6", neat.nn.FeedForwardNetwork.create(simple, conf), simple)]
-                           , "classic.txt")
+                           , "../classic.txt")
         game.play_game()
         if game.get_winner() == "ImpMaxN-2":
             scores[0] += 1
@@ -219,7 +215,7 @@ def imp_max_n2_neat_v6_6(conf, simple):
                             NEAT_SIMPLEv6("NEAT-SIMPLEv6", neat.nn.FeedForwardNetwork.create(simple, conf), simple),
                             ImpMaxNPlayerV2("ImpMaxN-2"),
                             NEAT_SIMPLEv6("NEAT-SIMPLEv6", neat.nn.FeedForwardNetwork.create(simple, conf), simple)]
-                           , "classic.txt")
+                           , "../classic.txt")
         game.play_game()
         if game.get_winner() == "ImpMaxN-2":
             scores[0] += 1
@@ -239,7 +235,7 @@ def imp_max_n3_neat_v6_4(conf, simple):
                             NEAT_SIMPLEv6("NEAT-SIMPLEv6", neat.nn.FeedForwardNetwork.create(simple, conf), simple),
                             ImpMaxNPlayerV3("ImpMaxN-3"),
                             NEAT_SIMPLEv6("NEAT-SIMPLEv6", neat.nn.FeedForwardNetwork.create(simple, conf), simple)]
-                           , "classic.txt")
+                           , "../classic.txt")
         game.play_game()
         if game.get_winner() == "ImpMaxN-3":
             scores[0] += 1
@@ -261,7 +257,7 @@ def imp_max_n3_neat_v6_6(conf, simple):
                             NEAT_SIMPLEv6("NEAT-SIMPLEv6", neat.nn.FeedForwardNetwork.create(simple, conf), simple),
                             ImpMaxNPlayerV3("ImpMaxN-3"),
                             NEAT_SIMPLEv6("NEAT-SIMPLEv6", neat.nn.FeedForwardNetwork.create(simple, conf), simple)]
-                           , "classic.txt")
+                           , "../classic.txt")
         game.play_game()
         if game.get_winner() == "ImpMaxN-3":
             scores[0] += 1
@@ -280,7 +276,7 @@ def imp_max_n1_neat_v4_4(conf, simple):
                             NEAT_SIMPLEv4("NEAT-SIMPLEv4", neat.nn.FeedForwardNetwork.create(simple, conf), simple),
                             ImpMaxNPlayer("ImpMaxN-1"),
                             NEAT_SIMPLEv4("NEAT-SIMPLEv4", neat.nn.FeedForwardNetwork.create(simple, conf), simple)]
-                           , "classic.txt")
+                           , "../classic.txt")
         game.play_game()
         if game.get_winner() == "ImpMaxN-1":
             scores[0] += 1
@@ -301,7 +297,7 @@ def imp_max_n1_neat_v4_6(conf, simple):
                             NEAT_SIMPLEv4("NEAT-SIMPLEv4", neat.nn.FeedForwardNetwork.create(simple, conf), simple),
                             ImpMaxNPlayer("ImpMaxN-1"),
                             NEAT_SIMPLEv4("NEAT-SIMPLEv4", neat.nn.FeedForwardNetwork.create(simple, conf), simple)]
-                           , "classic.txt")
+                           , "../classic.txt")
         game.play_game()
         if game.get_winner() == "ImpMaxN-1":
             scores[0] += 1
@@ -320,7 +316,7 @@ def imp_max_n2_neat_v4_4(conf, simple):
                             NEAT_SIMPLEv4("NEAT-SIMPLEv4", neat.nn.FeedForwardNetwork.create(simple, conf), simple),
                             ImpMaxNPlayerV2("ImpMaxN-2"),
                             NEAT_SIMPLEv4("NEAT-SIMPLEv4", neat.nn.FeedForwardNetwork.create(simple, conf), simple)]
-                           , "classic.txt")
+                           , "../classic.txt")
         game.play_game()
         if game.get_winner() == "ImpMaxN-2":
             scores[0] += 1
@@ -341,7 +337,7 @@ def imp_max_n2_neat_v4_6(conf, simple):
                             NEAT_SIMPLEv4("NEAT-SIMPLEv4", neat.nn.FeedForwardNetwork.create(simple, conf), simple),
                             ImpMaxNPlayerV2("ImpMaxN-2"),
                             NEAT_SIMPLEv4("NEAT-SIMPLEv4", neat.nn.FeedForwardNetwork.create(simple, conf), simple)]
-                           , "classic.txt")
+                           , "../classic.txt")
         game.play_game()
         if game.get_winner() == "ImpMaxN-2":
             scores[0] += 1
@@ -361,7 +357,7 @@ def imp_max_n3_neat_v4_4(conf, simple):
                             NEAT_SIMPLEv4("NEAT-SIMPLEv4", neat.nn.FeedForwardNetwork.create(simple, conf), simple),
                             ImpMaxNPlayerV3("ImpMaxN-3"),
                             NEAT_SIMPLEv4("NEAT-SIMPLEv4", neat.nn.FeedForwardNetwork.create(simple, conf), simple)]
-                           , "classic.txt")
+                           , "../classic.txt")
         game.play_game()
         if game.get_winner() == "ImpMaxN-3":
             scores[0] += 1
@@ -383,7 +379,7 @@ def imp_max_n3_neat_v4_6(conf, simple):
                             NEAT_SIMPLEv4("NEAT-SIMPLEv4", neat.nn.FeedForwardNetwork.create(simple, conf), simple),
                             ImpMaxNPlayerV3("ImpMaxN-3"),
                             NEAT_SIMPLEv4("NEAT-SIMPLEv4", neat.nn.FeedForwardNetwork.create(simple, conf), simple)]
-                           , "classic.txt")
+                           , "../classic.txt")
         game.play_game()
         if game.get_winner() == "ImpMaxN-3":
             scores[0] += 1
