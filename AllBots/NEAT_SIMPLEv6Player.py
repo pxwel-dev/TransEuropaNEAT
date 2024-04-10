@@ -8,11 +8,11 @@ import random
 
 
 class NEATPlayer(Player):
-    def __init__(self, name, neuralNet, genome):
+    def __init__(self, name, neuralNet):
         Player.__init__(self, name)
         self.citiesToCapture = []
         self.neuralNetwork = neuralNet
-        self.genome = genome
+        self.allCities = None
 
     def set_cities(self, cities):
         self._cities = cities
@@ -37,98 +37,26 @@ class NEATPlayer(Player):
 
     def create_network_inputs(self, moves, game_board: GameBoard):
         reformatted = []
-        #
-        # cityMinDistances = [1000, 1000, 1000, 1000, 1000]
-        # for i in self.citiesToCapture:
-        #     cityDistances = []
-        #     for move in moves:
-        #         cityDistances.append(
-        #             networkx.dijkstra_path_length(game_board.get_map(), move[0], i, weight='weight'))
-        #     if i.get_colour() == Colour.red:
-        #         cityMinDistances[0] = min(cityDistances)
-        #     elif i.get_colour() == Colour.yellow:
-        #         cityMinDistances[1] = min(cityDistances)
-        #     elif i.get_colour() == Colour.orange:
-        #         cityMinDistances[2] = min(cityDistances)
-        #     elif i.get_colour() == Colour.green:
-        #         cityMinDistances[3] = min(cityDistances)
-        #     elif i.get_colour() == Colour.blue:
-        #         cityMinDistances[4] = min(cityDistances)
-        #
-        # opponentNetworkDistances = []
-        #
-        # for player in game_board.get_players():
-        #     if player != self:
-        #         temp = []
-        #         try:
-        #             network = networkx.multi_source_dijkstra_path_length(
-        #                 game_board.get_map(), player.get_network().nodes, weight='weight')
-        #             for move in moves:
-        #                 temp.append(network[move[0]])
-        #             valid = True
-        #             nodes = player.get_network().nodes
-        #             for node in nodes:
-        #                 if self.get_network().has_node(node) is False:
-        #                     valid = False
-        #             if valid is True:
-        #                 opponentNetworkDistances.append([nodes, min(temp)])
-        #         except ValueError:
-        #             temp.append(1000)
-        #
-        # for i in cityMinDistances:
-        #     reformatted.append(i)
-        #
-        # if len(opponentNetworkDistances) != 0:
-        #     opponentDistanceToCities = []
-        #     temp = []
-        #     for i in opponentNetworkDistances:
-        #         temp.append(i[1])
-        #
-        #     nearestOpponentNetwork = opponentNetworkDistances[temp.index(min(temp))][0]
-        #     nearestOpponentDijkstra = networkx.multi_source_dijkstra_path_length(
-        #                 game_board.get_map(), nearestOpponentNetwork, weight='weight')
-        #
-        #     for i in self.citiesToCapture:
-        #         opponentDistanceToCities.append(nearestOpponentDijkstra[i])
-        #
-        #     while len(opponentDistanceToCities) != 5:
-        #         opponentDistanceToCities.append(1000)
-        #
-        #     for i in opponentDistanceToCities:
-        #         reformatted.append(i)
-        #     reformatted.append(min(temp))
-        #     reformatted.append([nearestOpponentNetwork, moves[temp.index(min(temp))][0]])
-        # else:
-        #     for i in range(0, 6):
-        #         reformatted.append(1000)
-        #     reformatted.append([None, None])
 
         for move in moves:
             formatted = []
 
             minCityDistances = [-1, -1, -1, -1, -1]
-            # distanceChange = [0, 0, 0, 0, 0]
 
             edgeCost = int(game_board.get_map().get_edge_data(move[0], move[1]).get('weight'))
 
             for i in self.citiesToCapture:
                 neighbourToCity = networkx.dijkstra_path_length(game_board.get_map(), move[0], i, weight='weight')
-                # networkNodeToCity = networkx.dijkstra_path_length(game_board.get_map(), move[1], i, weight='weight')
                 if i.get_colour() == Colour.red:
                     minCityDistances[0] = neighbourToCity + edgeCost
-                    # distanceChange[0] = abs(networkNodeToCity - neighbourToCity)
                 if i.get_colour() == Colour.yellow:
                     minCityDistances[1] = neighbourToCity + edgeCost
-                    # distanceChange[1] = abs(networkNodeToCity - neighbourToCity)
                 if i.get_colour() == Colour.orange:
                     minCityDistances[2] = neighbourToCity + edgeCost
-                    # distanceChange[2] = abs(networkNodeToCity - neighbourToCity)
                 if i.get_colour() == Colour.green:
                     minCityDistances[3] = neighbourToCity + edgeCost
-                    # distanceChange[3] = abs(networkNodeToCity - neighbourToCity)
                 if i.get_colour() == Colour.blue:
                     minCityDistances[4] = neighbourToCity + edgeCost
-                    # distanceChange[4] = abs(networkNodeToCity - neighbourToCity)
 
             opponentNetworkDistances = []
 
@@ -147,36 +75,6 @@ class NEATPlayer(Player):
             for i in opponentNetworkDistances:
                 if i == -1:
                     opponentNetworkDistances.remove(i)
-
-            # opponentMinCityDistances = [-1, -1, -1, -1, -1]
-            #
-            # try:
-            #     nearestOpponentNetwork = \
-            #         opponentNetworks[opponentNetworkDistances.index(min(opponentNetworkDistances))]
-            #
-            #     for i in self.citiesToCapture:
-            #         neighbourToCity = networkx.multi_source_dijkstra_path_length(
-            #             game_board.get_map(), nearestOpponentNetwork, weight='weight')[i]
-            #         if i.get_colour() == Colour.red:
-            #             opponentMinCityDistances[0] = neighbourToCity
-            #             # distanceChange[0] = abs(networkNodeToCity - neighbourToCity)
-            #         if i.get_colour() == Colour.yellow:
-            #             opponentMinCityDistances[1] = neighbourToCity
-            #             # distanceChange[1] = abs(networkNodeToCity - neighbourToCity)
-            #         if i.get_colour() == Colour.orange:
-            #             opponentMinCityDistances[2] = neighbourToCity
-            #             # distanceChange[2] = abs(networkNodeToCity - neighbourToCity)
-            #         if i.get_colour() == Colour.green:
-            #             opponentMinCityDistances[3] = neighbourToCity
-            #             # distanceChange[3] = abs(networkNodeToCity - neighbourToCity)
-            #         if i.get_colour() == Colour.blue:
-            #             opponentMinCityDistances[4] = neighbourToCity
-            #             # distanceChange[4] = abs(networkNodeToCity - neighbourToCity)
-            # except Exception:
-            #     pass
-            #
-            # for i in opponentMinCityDistances:
-            #     formatted.append(i)
 
             opponentNum = len(game_board.get_players()) - 1
             opponentCityColoursLeft = [opponentNum, opponentNum, opponentNum, opponentNum, opponentNum]
@@ -204,22 +102,90 @@ class NEATPlayer(Player):
             else:
                 formatted.append(-1)
 
+            temp = copy.deepcopy(self.allCities)
+            for city in game_board.get_cities().values():
+                city_in_network = 0
+                for player in game_board.get_players():
+                    if city in player.get_network().nodes:
+                        city_in_network += 1
+                if city_in_network > 0:
+                    if city.get_colour() == Colour.red:
+                        temp[0] -= 1
+                    elif city.get_colour() == Colour.yellow:
+                        temp[1] -= 1
+                    elif city.get_colour() == Colour.orange:
+                        temp[2] -= 1
+                    elif city.get_colour() == Colour.green:
+                        temp[3] -= 1
+                    elif city.get_colour() == Colour.blue:
+                        temp[4] -= 1
+
             if isinstance(move[0], Nodes.City) and move[0] not in self.citiesToCapture:
                 if move[0].get_colour() == Colour.red:
                     formatted.append(1)
-                    formatted.append(1 - (opponentCityColoursLeft[0]/opponentNum))
+                    if temp[0] != 0:
+                        formatted.append(1 - (opponentCityColoursLeft[0] / temp[0]))
+                    else:
+                        notCaptured = 0
+                        for player in self.check_players_in_network(game_board):
+                            if Colour.red not in player.capturedCityCols:
+                                notCaptured += 1
+                        if notCaptured != 0:
+                            formatted.append(1 - (notCaptured / opponentCityColoursLeft[0]))
+                        else:
+                            formatted.append(1 - (opponentCityColoursLeft[0] / opponentNum))
                 elif move[0].get_colour() == Colour.yellow:
                     formatted.append(2)
-                    formatted.append(1 - (opponentCityColoursLeft[1] / opponentNum))
+                    if temp[1] != 0:
+                        formatted.append(1 - (opponentCityColoursLeft[1] / temp[1]))
+                    else:
+                        notCaptured = 0
+                        for player in self.check_players_in_network(game_board):
+                            if Colour.yellow not in player.capturedCityCols:
+                                notCaptured += 1
+                        if notCaptured != 0:
+                            formatted.append(1 - (notCaptured / opponentCityColoursLeft[1]))
+                        else:
+                            formatted.append(1 - (opponentCityColoursLeft[1] / opponentNum))
                 elif move[0].get_colour() == Colour.orange:
                     formatted.append(3)
-                    formatted.append(1 - (opponentCityColoursLeft[2] / opponentNum))
+                    if temp[2] != 0:
+                        formatted.append(1 - (opponentCityColoursLeft[2] / temp[2]))
+                    else:
+                        notCaptured = 0
+                        for player in self.check_players_in_network(game_board):
+                            if Colour.orange not in player.capturedCityCols:
+                                notCaptured += 1
+                        if notCaptured != 0:
+                            formatted.append(1 - (notCaptured / opponentCityColoursLeft[2]))
+                        else:
+                            formatted.append(1 - (opponentCityColoursLeft[2] / opponentNum))
                 elif move[0].get_colour() == Colour.green:
                     formatted.append(4)
-                    formatted.append(1 - (opponentCityColoursLeft[3] / opponentNum))
+                    if temp[3] != 0:
+                        formatted.append(1 - (opponentCityColoursLeft[3] / temp[3]))
+                    else:
+                        notCaptured = 0
+                        for player in self.check_players_in_network(game_board):
+                            if Colour.green not in player.capturedCityCols:
+                                notCaptured += 1
+                        if notCaptured != 0:
+                            formatted.append(1 - (notCaptured / opponentCityColoursLeft[3]))
+                        else:
+                            formatted.append(1 - (opponentCityColoursLeft[3] / opponentNum))
                 elif move[0].get_colour() == Colour.blue:
                     formatted.append(5)
-                    formatted.append(1 - (opponentCityColoursLeft[4] / opponentNum))
+                    if temp[4] != 0:
+                        formatted.append(1 - (opponentCityColoursLeft[4] / temp[4]))
+                    else:
+                        notCaptured = 0
+                        for player in self.check_players_in_network(game_board):
+                            if Colour.blue not in player.capturedCityCols:
+                                notCaptured += 1
+                        if notCaptured != 0:
+                            formatted.append(1 - (notCaptured / opponentCityColoursLeft[4]))
+                        else:
+                            formatted.append(1 - (opponentCityColoursLeft[4] / opponentNum))
             elif isinstance(move[0], Nodes.City) and move[0] in self.citiesToCapture:
                 if move[0].get_colour() == Colour.red:
                     formatted.append(1)
@@ -284,6 +250,7 @@ class NEATPlayer(Player):
                                                             move[6], move[7], move[8]]))
             while True:
                 choice = inputs[outputs.index(max(outputs))][9]
+                # print(inputs[outputs.index(max(outputs))])
                 cost = abs(inputs[outputs.index(max(outputs))][8])
                 if self.tracksToPlace != -1:
                     if cost == 1 and self.tracksToPlace - 1 >= 0:
@@ -318,7 +285,16 @@ class NEATPlayer(Player):
         else:
             return 'w'
 
+    def check_players_in_network(self, game_board: GameBoard):
+        players = []
+        for player in game_board.get_players():
+            if player != self:
+                if networkx.utils.graphs_equal(player.get_network(), self.get_network()):
+                    players.append(player)
+        return players
+
     def choose_start_pos(self, game_board: GameBoard) -> str:
+        self.allCities = game_board.get_cities_grouped()
         self.tracksToPlace = -1
         city_id = self.make_move(game_board)[1]
         self.add_start_node(game_board.get_nodes().get(city_id))

@@ -1,5 +1,4 @@
-ImpMaxN-1 vs ImpMaxN-2 (4 Players): [449, 551]
-ImpMaxN-1 vs ImpMaxN-2 (6 Players): [558, 442]
+
 ImpMaxN-1 vs ImpMaxN-2 vs ImpMaxN-3 (3 Players): [339, 332, 329]
 ImpMaxN-1 vs ImpMaxN-2 vs ImpMaxN-3 (6 Players): [364, 326, 310]
 
@@ -38,3 +37,16 @@ ImpMaxN-3 vs NEAT-SIMPLEv6 (4 Players): [509, 491]
 ImpMaxN-1 vs NEAT-SIMPLEv6 (6 Players): [497, 503]
 ImpMaxN-2 vs NEAT-SIMPLEv6 (6 Players): [478, 522]
 ImpMaxN-3 vs NEAT-SIMPLEv6 (6 Players): [471, 529]
+
+
+NEAT-SIMPLEv4 vs NEAT-SIMPLEv6 (4 Players): [5001, 4999]
+NEAT-SIMPLEv4 vs NEAT-SIMPLEv6 (6 Players): [4993, 5007]
+
+ImpMaxN-1 vs ImpMaxN-3 (4 Players): [479, 521]
+ImpMaxN-1 vs ImpMaxN-3 (6 Players): [525, 475]
+
+ImpMaxN-1 vs ImpMaxN-2 (4 Players): [449, 551]
+ImpMaxN-1 vs ImpMaxN-2 (6 Players): [558, 442]
+
+ImpMaxN-2 vs ImpMaxN-3 (4 Players): [490, 510]
+ImpMaxN-2 vs ImpMaxN-3 (6 Players): [488, 512]

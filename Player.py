@@ -14,12 +14,10 @@ class Player:
 		self.capturedCityCols = []
 		self._network = Graph()
 		self._cities = {}
-		self.__score = 0
 
 	def reset(self):
 		self._network = Graph()
 		self._cities = {}
-		self.__score = 0
 		self.tracksToPlace = 2
 
 	def set_cities(self, cities):
@@ -32,12 +30,6 @@ class Player:
 
 	def get_network(self):
 		return self._network
-
-	def get_score(self):
-		return self.__score
-
-	def add_score(self, score):
-		self.__score += score
 
 	def add_start_node(self, node: Node):
 		self._network.add_node(node)

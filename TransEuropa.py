@@ -1,14 +1,12 @@
 from GameBoard import GameBoard
 from HumanPlayer import HumanPlayer
-from NEAT_SIMPLEv6Player import NEATPlayer
-from ImperfectMaxN import ImpMaxNPlayer
-import random
+from AllBots.NEAT_SIMPLEv6Player import NEATPlayer
+from AllBots.ImperfectMaxN import ImpMaxNPlayer
 
 
 class TransEuropa:
 	def __init__(self, players: [], map_filepath: str):
 		self.__players = players
-		random.shuffle(self.__players)
 		self._map_filepath = map_filepath
 		self.__board = GameBoard(self.__players, self._map_filepath)
 		self.turn_count = 0
@@ -34,18 +32,18 @@ class TransEuropa:
 					print("=====FLUSHING TERMINAL=====")
 		for player in self.__board.get_players():
 			if isinstance(player, NEATPlayer):
-				# print(player.name + ': ' + player.choose_start_pos(self.__board))
-				player.choose_start_pos(self.__board)
+				print(player.name + ': ' + player.choose_start_pos(self.__board))
+				#player.choose_start_pos(self.__board)
 			elif isinstance(player, ImpMaxNPlayer):
-				# print(player.name + ': ' + player.choose_start_pos(self.__board))
-				player.choose_start_pos(self.__board)
+				print(player.name + ': ' + player.choose_start_pos(self.__board))
+				#player.choose_start_pos(self.__board)
 			else:
 				player.choose_start_pos(self.__board)
 		game_won = False
 		self.turn_count = 0
 		while not game_won:
 			self.turn_count += 1
-			# print("==========\nRound: " + str(self.turn_count) + "\n==========")
+			print("==========\nRound: " + str(self.turn_count) + "\n==========")
 			for player in self.__board.get_players():
 				if not player.has_won() and not game_won:
 					player.tracksToPlace = 2
@@ -64,24 +62,20 @@ class TransEuropa:
 							if player.has_won():
 								game_won = True
 								break
-							# try:
-							# 	player.tracksToPlace -= self.__board.get_edges()[co_ords[0] + co_ords[1]][2]
-							# except KeyError:
-							# 	player.tracksToPlace -= self.__board.get_edges()[co_ords[1] + co_ords[0]][2]
 				else:
 					game_won = True
 					break
 		return self.end_game(self.turn_count)
 
 	def end_game(self, turns):
-		# for player in self.__players:
-		#
-		# 	if player.has_won():
-		# 		print("Round {0} | Winner found! | Winner: {1}".format(str(turns), player.name))
+		for player in self.__players:
+
+			if player.has_won():
+				print("Round {0} | Winner found! | Winner: {1}".format(str(turns), player.name))
 		fitnessScore = []
 		for player in self.__board.get_players():
 			if isinstance(player, NEATPlayer):
-				# print("Neural Network Cities Left: \n ", [city.get_name() for city in player.citiesToCapture])
+				print("Neural Network Cities Left: \n ", [city.get_name() for city in player.citiesToCapture])
 				fitnessScore.append(player.fitness)
 		return fitnessScore
 
