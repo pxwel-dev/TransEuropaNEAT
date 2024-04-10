@@ -80,12 +80,12 @@ def multiprocessing_eval(genomes, conf):
             for j in range(0, NUMBER_OF_GAMES):
                 print("Starting game {0}/{1}:{2}...".format(count, int(len(genomes) / 6), j + 1))
                 formattedPlayers = [
-                    NEAT_SIMPLEv6("1", neat.nn.FeedForwardNetwork.create(playerGenomes[0], conf), playerGenomes[0]),
-                    NEAT_SIMPLEv6("2", neat.nn.FeedForwardNetwork.create(playerGenomes[1], conf), playerGenomes[1]),
-                    NEAT_SIMPLEv6("3", neat.nn.FeedForwardNetwork.create(playerGenomes[2], conf), playerGenomes[2]),
-                    NEAT_SIMPLEv6("4", neat.nn.FeedForwardNetwork.create(playerGenomes[3], conf), playerGenomes[3]),
-                    NEAT_SIMPLEv6("5", neat.nn.FeedForwardNetwork.create(playerGenomes[4], conf), playerGenomes[4]),
-                    NEAT_SIMPLEv6("6", neat.nn.FeedForwardNetwork.create(playerGenomes[5], conf), playerGenomes[5])]
+                    NEAT_SIMPLE("1", neat.nn.FeedForwardNetwork.create(playerGenomes[0], conf)),
+                    NEAT_SIMPLE("2", neat.nn.FeedForwardNetwork.create(playerGenomes[1], conf)),
+                    NEAT_SIMPLE("3", neat.nn.FeedForwardNetwork.create(playerGenomes[2], conf)),
+                    NEAT_SIMPLE("4", neat.nn.FeedForwardNetwork.create(playerGenomes[3], conf)),
+                    NEAT_SIMPLE("5", neat.nn.FeedForwardNetwork.create(playerGenomes[4], conf)),
+                    NEAT_SIMPLE("6", neat.nn.FeedForwardNetwork.create(playerGenomes[5], conf))]
                 game = TransEuropa(formattedPlayers, "classic.txt")
                 fitnessScore = game.play_game()
                 playerGenomes[0].fitness += fitnessScore[0]
@@ -123,7 +123,7 @@ def multiprocessing_eval(genomes, conf):
 def test_best_network(conf):
     f = open("NEAT-SIMPLEv6.pickle", "rb")
     best_player = pickle.load(f)
-    game = TransEuropa([NEAT_SIMPLEv6("NeuralNetwork", neat.nn.FeedForwardNetwork.create(best_player, conf), best_player), HumanPlayer("Pawel"), HumanPlayer("Jan")], "classic.txt")
+    game = TransEuropa([NEAT_SIMPLEv4("NeuralNetwork", neat.nn.FeedForwardNetwork.create(best_player, conf)), HumanPlayer("Pawel")], "classic.txt")
     game.play_game()
 
 
@@ -174,7 +174,7 @@ if __name__ == "__main__":
     # run_neat(configV3, "NEAT-SIMPLEv3.pickle")
     # run_neat(configV4, "NEAT-SIMPLEv5.pickle")
     # run_neat(configV4, "NEAT-SIMPLEv6.pickle")
-    #test_best_network(configV4)
+    test_best_network(configV4)
     # bot_battle1v1(config, configV4)
     # bot_battle1v1(config, configV2, configV3, configV4)
     # imp_max_n_battle()

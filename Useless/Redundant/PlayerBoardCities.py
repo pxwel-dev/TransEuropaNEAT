@@ -5,7 +5,7 @@ PRECISE_SEARCH_THRESHOLD = 2
 
 
 class Player:
-    def __init__(self, board, neuralNet, genome, name):
+    def __init__(self, board, neuralNet, name):
         self.score = 0
         self.won = False
         self.tracksToPlace = 2
@@ -13,9 +13,7 @@ class Player:
         self.tracksPlaced = []
         self.currentBoard = board.return_board()
 
-        self.boardRowLengths = board.boardRowLengths
         self.allEdgeNeighbours = board.boardEdgeNeighbours
-        self.genome = genome
         self.neuralNetwork = neuralNet
         self.name = name
 
@@ -92,22 +90,11 @@ class Player:
             if len(track_distances) == 0:
                 track_distances.append(1000)
 
-            single_edges = 0
-            double_edges = 0
-            neighbours = copy.deepcopy(self.find_track_details(move)[1])
-            for i in neighbours:
-                if abs(self.currentBoard[i[0]][i[1]]) == 1:
-                    single_edges += 1
-                elif abs(self.currentBoard[i[0]][i[1]]) == 2:
-                    double_edges += 1
-
             formatted = []
             for i in min_city_distances:
                 formatted.append(i)
             formatted.append(min(track_distances))
             formatted.append(self.currentBoard[move[0]][move[1]])
-            formatted.append(single_edges)
-            formatted.append(double_edges)
             formatted.append(move)
             reformatted.append(formatted)
         return reformatted
@@ -118,7 +105,7 @@ class Player:
         for move in moves:
             outputs.append(
                 self.neuralNetwork.activate([move[0], move[1], move[2], move[3],
-                                             move[4], move[5], move[6], move[7], move[8]])[0])
+                                             move[4], move[5], move[6]])[0])
         while True:
             choice = moves[outputs.index(max(outputs))][9]
             cost = abs(moves[outputs.index(max(outputs))][6])

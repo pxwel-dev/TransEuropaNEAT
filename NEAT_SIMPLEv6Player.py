@@ -8,11 +8,10 @@ import random
 
 
 class NEATPlayer(Player):
-    def __init__(self, name, neuralNet, genome):
+    def __init__(self, name, neuralNet):
         Player.__init__(self, name)
         self.citiesToCapture = []
         self.neuralNetwork = neuralNet
-        self.genome = genome
         self.allCities = None
 
     def set_cities(self, cities):
@@ -257,8 +256,8 @@ class NEATPlayer(Player):
                     if cost == 1 and self.tracksToPlace - 1 >= 0:
                         self.tracksToPlace -= 1
                         self.fitness -= 0.01
-
-
+                        # print("{0} Move: {1} -> {2}"
+                        #       .format(self.name, str(choice[1].get_id()), str(choice[0].get_id())))
                         break
                     elif cost == 2 and self.tracksToPlace - 2 == 0:
                         self.tracksToPlace -= 2

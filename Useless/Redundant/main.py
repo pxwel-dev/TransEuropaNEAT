@@ -23,18 +23,12 @@ class TransEuropaGame:
         self.genomes = genomes
         self.conf = conf
         self.board = board
-        self.player1 = Player(self.board, neat.nn.FeedForwardNetwork.create(self.genomes[0], self.conf), genomes[0],
-                              "1")
-        self.player2 = Player(self.board, neat.nn.FeedForwardNetwork.create(self.genomes[1], self.conf), genomes[1],
-                              "2")
-        self.player3 = Player(self.board, neat.nn.FeedForwardNetwork.create(self.genomes[2], self.conf), genomes[2],
-                              "3")
-        self.player4 = Player(self.board, neat.nn.FeedForwardNetwork.create(self.genomes[3], self.conf), genomes[3],
-                              "4")
-        self.player5 = Player(self.board, neat.nn.FeedForwardNetwork.create(self.genomes[4], self.conf), genomes[4],
-                              "5")
-        self.player6 = Player(self.board, neat.nn.FeedForwardNetwork.create(self.genomes[5], self.conf), genomes[5],
-                              "6")
+        self.player1 = Player(self.board, neat.nn.FeedForwardNetwork.create(self.genomes[0], self.conf), "1")
+        self.player2 = Player(self.board, neat.nn.FeedForwardNetwork.create(self.genomes[1], self.conf), "2")
+        self.player3 = Player(self.board, neat.nn.FeedForwardNetwork.create(self.genomes[2], self.conf), "3")
+        self.player4 = Player(self.board, neat.nn.FeedForwardNetwork.create(self.genomes[3], self.conf), "4")
+        self.player5 = Player(self.board, neat.nn.FeedForwardNetwork.create(self.genomes[4], self.conf), "5")
+        self.player6 = Player(self.board, neat.nn.FeedForwardNetwork.create(self.genomes[5], self.conf), "6")
 
     def init_game(self):
         self.player1.citiesToCapture = self.board.init_player_cities()
@@ -347,7 +341,7 @@ def multiprocessing_eval(genomes, conf):
     count = 0
     player_genomes = []
     for i, (genome_id, genome) in enumerate(genomes):
-        genome.fitness = 0  # if genome.fitness is None else genome.fitness
+        genome.fitness = 0
         player_genomes.append(genome)
         if len(player_genomes) == 6:
             count += 1
@@ -363,20 +357,7 @@ def multiprocessing_eval(genomes, conf):
     return genomes
 
 
-def final_match(best_player, conf):
-    players = []
-    for i in range(0, 6):
-        players.append(copy.deepcopy(best_player))
-    board = Board()
-    game = TransEuropaGame(board, players, conf)
-    game.init_game()
-    while True:
-        if not game.play_moves():
-            break
-
-
 def run_neat(conf):
-    #pop = neat.Checkpointer.restore_checkpoint('neat-checkpoint-36')
     pop = neat.Population(conf)
     pop.add_reporter(neat.StdOutReporter(True))
     stats = neat.StatisticsReporter()
@@ -386,7 +367,6 @@ def run_neat(conf):
     best_genome = pop.run(eval_genomes, GENERATIONS)
     with open("best.pickle", "wb") as file:
         pickle.dump(best_genome, file)
-    final_match(best_genome, conf)
 
 
 if __name__ == "__main__":

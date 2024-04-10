@@ -36,160 +36,28 @@ class NEATPlayer(Player):
 
     def create_network_inputs(self, moves, game_board: GameBoard):
         reformatted = []
-        #
-        # cityMinDistances = [1000, 1000, 1000, 1000, 1000]
-        # for i in self.citiesToCapture:
-        #     cityDistances = []
-        #     for move in moves:
-        #         cityDistances.append(
-        #             networkx.dijkstra_path_length(game_board.get_map(), move[0], i, weight='weight'))
-        #     if i.get_colour() == Colour.red:
-        #         cityMinDistances[0] = min(cityDistances)
-        #     elif i.get_colour() == Colour.yellow:
-        #         cityMinDistances[1] = min(cityDistances)
-        #     elif i.get_colour() == Colour.orange:
-        #         cityMinDistances[2] = min(cityDistances)
-        #     elif i.get_colour() == Colour.green:
-        #         cityMinDistances[3] = min(cityDistances)
-        #     elif i.get_colour() == Colour.blue:
-        #         cityMinDistances[4] = min(cityDistances)
-        #
-        # opponentNetworkDistances = []
-        #
-        # for player in game_board.get_players():
-        #     if player != self:
-        #         temp = []
-        #         try:
-        #             network = networkx.multi_source_dijkstra_path_length(
-        #                 game_board.get_map(), player.get_network().nodes, weight='weight')
-        #             for move in moves:
-        #                 temp.append(network[move[0]])
-        #             valid = True
-        #             nodes = player.get_network().nodes
-        #             for node in nodes:
-        #                 if self.get_network().has_node(node) is False:
-        #                     valid = False
-        #             if valid is True:
-        #                 opponentNetworkDistances.append([nodes, min(temp)])
-        #         except ValueError:
-        #             temp.append(1000)
-        #
-        # for i in cityMinDistances:
-        #     reformatted.append(i)
-        #
-        # if len(opponentNetworkDistances) != 0:
-        #     opponentDistanceToCities = []
-        #     temp = []
-        #     for i in opponentNetworkDistances:
-        #         temp.append(i[1])
-        #
-        #     nearestOpponentNetwork = opponentNetworkDistances[temp.index(min(temp))][0]
-        #     nearestOpponentDijkstra = networkx.multi_source_dijkstra_path_length(
-        #                 game_board.get_map(), nearestOpponentNetwork, weight='weight')
-        #
-        #     for i in self.citiesToCapture:
-        #         opponentDistanceToCities.append(nearestOpponentDijkstra[i])
-        #
-        #     while len(opponentDistanceToCities) != 5:
-        #         opponentDistanceToCities.append(1000)
-        #
-        #     for i in opponentDistanceToCities:
-        #         reformatted.append(i)
-        #     reformatted.append(min(temp))
-        #     reformatted.append([nearestOpponentNetwork, moves[temp.index(min(temp))][0]])
-        # else:
-        #     for i in range(0, 6):
-        #         reformatted.append(1000)
-        #     reformatted.append([None, None])
 
         for move in moves:
             minCityDistances = [-1, -1, -1, -1, -1]
-            # distanceChange = [0, 0, 0, 0, 0]
 
             edgeCost = int(game_board.get_map().get_edge_data(move[0], move[1]).get('weight'))
 
             for i in self.citiesToCapture:
                 neighbourToCity = networkx.dijkstra_path_length(game_board.get_map(), move[0], i, weight='weight')
-                # networkNodeToCity = networkx.dijkstra_path_length(game_board.get_map(), move[1], i, weight='weight')
                 if i.get_colour() == Colour.red:
                     minCityDistances[0] = neighbourToCity + edgeCost
-                    # distanceChange[0] = abs(networkNodeToCity - neighbourToCity)
                 if i.get_colour() == Colour.yellow:
                     minCityDistances[1] = neighbourToCity + edgeCost
-                    # distanceChange[1] = abs(networkNodeToCity - neighbourToCity)
                 if i.get_colour() == Colour.orange:
                     minCityDistances[2] = neighbourToCity + edgeCost
-                    # distanceChange[2] = abs(networkNodeToCity - neighbourToCity)
                 if i.get_colour() == Colour.green:
                     minCityDistances[3] = neighbourToCity + edgeCost
-                    # distanceChange[3] = abs(networkNodeToCity - neighbourToCity)
                 if i.get_colour() == Colour.blue:
                     minCityDistances[4] = neighbourToCity + edgeCost
-                    # distanceChange[4] = abs(networkNodeToCity - neighbourToCity)
-
-            # opponentNetworkDistances = []
-            # opponentNetworks = []
-            #
-            # for player in game_board.get_players():
-            #     if player != self:
-            #         try:
-            #             network = networkx.multi_source_dijkstra_path_length(
-            #                 game_board.get_map(), player.get_network().nodes, weight='weight')
-            #             if networkx.utils.graphs_equal(player.get_network(), self.get_network()):
-            #                 opponentNetworkDistances.append(-1)
-            #             else:
-            #                 opponentNetworkDistances.append(
-            #                     network[move[0]] + edgeCost)  # , abs(network[move[1]] - network[move[0]])])
-            #                 opponentNetworks.append(player.get_network())
-            #         except ValueError:
-            #             opponentNetworkDistances.append(-1)  # , 1000])
 
             formatted = []
             for i in minCityDistances:
                 formatted.append(i)
-
-            # for i in opponentNetworkDistances:
-            #     if i == -1:
-            #         opponentNetworkDistances.remove(i)
-            #
-            # if len(opponentNetworkDistances) != 0:
-            #     formatted.append(min(opponentNetworkDistances))
-            # else:
-            #     formatted.append(-1)
-            # if move[0] in self.citiesToCapture or move[1] in self.citiesToCapture:
-            #     formatted.append(int(game_board.get_map().get_edge_data(move[0], move[1]).get('weight')))
-            # else:
-            #     formatted.append(-int(game_board.get_map().get_edge_data(move[0], move[1]).get('weight')))
-
-            # opponentMinCityDistances = [-1, -1, -1, -1, -1]
-            #
-            # try:
-            #     nearestOpponentNetwork = \
-            #         opponentNetworks[opponentNetworkDistances.index(min(opponentNetworkDistances))]
-            #
-            #     for i in self.citiesToCapture:
-            #         neighbourToCity = networkx.multi_source_dijkstra_path_length(
-            #             game_board.get_map(), nearestOpponentNetwork, weight='weight')[i]
-            #         if i.get_colour() == Colour.red:
-            #             opponentMinCityDistances[0] = neighbourToCity
-            #             # distanceChange[0] = abs(networkNodeToCity - neighbourToCity)
-            #         if i.get_colour() == Colour.yellow:
-            #             opponentMinCityDistances[1] = neighbourToCity
-            #             # distanceChange[1] = abs(networkNodeToCity - neighbourToCity)
-            #         if i.get_colour() == Colour.orange:
-            #             opponentMinCityDistances[2] = neighbourToCity
-            #             # distanceChange[2] = abs(networkNodeToCity - neighbourToCity)
-            #         if i.get_colour() == Colour.green:
-            #             opponentMinCityDistances[3] = neighbourToCity
-            #             # distanceChange[3] = abs(networkNodeToCity - neighbourToCity)
-            #         if i.get_colour() == Colour.blue:
-            #             opponentMinCityDistances[4] = neighbourToCity
-            #             # distanceChange[4] = abs(networkNodeToCity - neighbourToCity)
-            # except Exception:
-            #     pass
-            #
-            # for i in opponentMinCityDistances:
-            #     formatted.append(i)
 
             opponentNum = len(game_board.get_players()) - 1
             opponentCityColoursLeft = [opponentNum, opponentNum, opponentNum, opponentNum, opponentNum]
