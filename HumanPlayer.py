@@ -44,18 +44,6 @@ class HumanPlayer(Player):
         else:
             return 'w'
 
-    def network_merge(self, game_board: GameBoard):
-        ret = False
-        for player in game_board.get_players():
-            if player != self:
-                for node in player.get_network().nodes:
-                    if node in self._network:
-                        self._network = networkx.compose(self._network,
-                                                         player.get_network())
-                        ret = True
-                        break
-        return ret
-
     def set_cities(self, cities):
         self._cities = cities
         self.citiesToCapture = copy.copy(cities)
