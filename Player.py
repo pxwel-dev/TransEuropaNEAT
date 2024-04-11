@@ -81,7 +81,7 @@ class Player:
         :return: if player has won
         """
         for city in self._cities:
-            if city not in self._networkNoColTracks.nodes:
+            if city not in self._networkAllTracks.nodes:
                 return False
         return True
 
