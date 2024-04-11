@@ -14,11 +14,13 @@ class Player:
         self.colouredTracks = 3
         self.fitness = 0
         self.capturedCityCols = []
-        self._network = Graph()
+        self._networkAllTracks = Graph()
+        self._networkNoColTracks = Graph()
         self._cities = {}
 
     def reset(self):
-        self._network = Graph()
+        self._networkAllTracks = Graph()
+        self._networkNoColTracks = Graph()
         self._cities = {}
         self.tracksToPlace = 2
 
@@ -31,20 +33,20 @@ class Player:
         self._cities = cities
 
     def get_network(self):
-        return self._network
+        return self._networkNoColTracks
 
     def add_start_node(self, node: Node):
-        self._network.add_node(node)
+        self._networkNoColTracks.add_node(node)
 
     def add_node_to_network(self, game_board: GameBoard, chosen_node: [str, str]):
-        self._network.add_node(game_board.get_nodes().get(chosen_node[0]))
+        self._networkNoColTracks.add_node(game_board.get_nodes().get(chosen_node[0]))
         edge = game_board.get_edges().get(chosen_node[0] + chosen_node[1])
         if edge is None:
             edge = game_board.get_edges().get(chosen_node[1] + chosen_node[0])
         try:
             # game_board.get_map()[edge[0]][edge[1]]['weight'] = 0
             game_board.place_track(edge[0], edge[1])
-            self._network.add_edge(edge[0], edge[1], weight=0)
+            self._networkNoColTracks.add_edge(edge[0], edge[1], weight=0)
         except TypeError as err:
             print("error: {0}".format(err))
 
@@ -53,9 +55,9 @@ class Player:
         for player in game_board.get_players():
             if player != self:
                 for node in player.get_network().nodes:
-                    if node in self._network:
-                        self._network = networkx.compose(self._network,
-                                                         player.get_network())
+                    if node in self._networkNoColTracks:
+                        self._networkNoColTracks = networkx.compose(self._networkNoColTracks,
+                                                                    player.get_network())
                         ret = True
                         break
         return ret
@@ -76,16 +78,16 @@ class Player:
         :return: if player has won
         """
         for city in self._cities:
-            if city not in self._network.nodes:
+            if city not in self._networkNoColTracks.nodes:
                 return False
         return True
 
     def _end_game_score(self, game_board: GameBoard) -> int:
         score = 0
         for city in self._cities:
-            if city not in self._network:
+            if city not in self._networkNoColTracks:
                 shortest_path = 999
-                for node in self._network:
+                for node in self._networkNoColTracks:
                     path_len = nx.shortest_path_length(game_board, city, node)
                     if path_len < shortest_path:
                         shortest_path = path_len
