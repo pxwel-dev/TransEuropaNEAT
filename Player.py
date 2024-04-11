@@ -32,8 +32,11 @@ class Player:
         """
         self._cities = cities
 
-    def get_network(self):
+    def get_networkNoColTracks(self):
         return self._networkNoColTracks
+
+    def get_networkAllTracks(self):
+        return self._networkAllTracks
 
     def add_start_node(self, node: Node):
         self._networkNoColTracks.add_node(node)
