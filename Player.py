@@ -41,17 +41,18 @@ class Player:
     def add_start_node(self, node: Node):
         self._networkNoColTracks.add_node(node)
 
-    def add_node_to_network(self, game_board: GameBoard, chosen_node: [str, str]):
-        self._networkNoColTracks.add_node(game_board.get_nodes().get(chosen_node[0]))
+    def add_node_to_network(self, game_board: GameBoard, chosen_node: [str, str], coloured: bool = False):
         edge = game_board.get_edges().get(chosen_node[0] + chosen_node[1])
         if edge is None:
             edge = game_board.get_edges().get(chosen_node[1] + chosen_node[0])
-        try:
-            # game_board.get_map()[edge[0]][edge[1]]['weight'] = 0
-            game_board.place_track(edge[0], edge[1])
+
+        if coloured:
+            self._networkAllTracks.add_node(game_board.get_nodes().get(chosen_node[0]))
+            self._networkAllTracks.add_edge(edge[0], edge[1], weight=0)
+        else:
+            self._networkNoColTracks.add_node(game_board.get_nodes().get(chosen_node[0]))
             self._networkNoColTracks.add_edge(edge[0], edge[1], weight=0)
-        except TypeError as err:
-            print("error: {0}".format(err))
+            game_board.place_track(edge[0], edge[1])
 
     def network_merge(self, game_board: GameBoard):
         ret = False
