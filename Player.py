@@ -88,9 +88,9 @@ class Player:
     def _end_game_score(self, game_board: GameBoard) -> int:
         score = 0
         for city in self._cities:
-            if city not in self._networkNoColTracks:
+            if city not in self._networkAllTracks:
                 shortest_path = 999
-                for node in self._networkNoColTracks:
+                for node in self._networkAllTracks:
                     path_len = nx.shortest_path_length(game_board, city, node)
                     if path_len < shortest_path:
                         shortest_path = path_len
