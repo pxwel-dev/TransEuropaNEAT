@@ -57,10 +57,13 @@ class Player:
         ret = False
         for player in game_board.get_players():
             if player != self:
-                for node in player.get_network().nodes:
-                    if node in self._networkNoColTracks:
-                        self._networkNoColTracks = networkx.compose(self._networkNoColTracks,
-                                                                    player.get_network())
+                for node in player.get_networkNoColTracks().nodes:
+                    if node in self._networkAllTracks:
+                        self._networkAllTracks = networkx.compose(self._networkAllTracks,
+                                                                  player.get_networkNoColTracks())
+                        if node in self._networkNoColTracks:
+                            self._networkNoColTracks = networkx.compose(self._networkNoColTracks,
+                                                                        player.get_networkNoColTracks())
                         ret = True
                         break
         return ret
