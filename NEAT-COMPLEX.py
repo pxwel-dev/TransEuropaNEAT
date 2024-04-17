@@ -80,7 +80,7 @@ class NEATPlayer(Player):
                     opponentNetworkDistances.remove(i)
 
             opponentNum = len(game_board.get_players()) - 1
-            opponentCityColoursLeft = [opponentNum, opponentNum, opponentNum, opponentNum, opponentNum]
+            opponentCityColoursLeft = [opponentNum] * 5
 
             for player in game_board.get_players():
                 if player != self:
