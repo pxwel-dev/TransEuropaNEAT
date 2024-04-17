@@ -30,10 +30,10 @@ class NEATPlayer(Player):
                     if [neighbour, city] not in valid_moves:
                         valid_moves.append([neighbour, city])
         else:
-            for node in self.get_network().nodes:
+            for node in self.get_networkAllTracks().nodes:
                 for neighbour in board.neighbors(node):
                     if [neighbour, node] not in valid_moves and \
-                            neighbour not in self.get_network().nodes:
+                            neighbour not in self.get_networkAllTracks().nodes:
                         valid_moves.append([neighbour, node])
         random.shuffle(valid_moves)
         return valid_moves
