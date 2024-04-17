@@ -52,10 +52,11 @@ class Player:
         if edge is None:
             edge = game_board.get_edges().get(chosen_node[1] + chosen_node[0])
 
+        self._networkAllTracks.add_node(game_board.get_nodes().get(chosen_node[0]))
+        self._networkAllTracks.add_edge(edge[0], edge[1], weight=0)
         if coloured:
-            self._networkAllTracks.add_node(game_board.get_nodes().get(chosen_node[0]))
-            self._networkAllTracks.add_edge(edge[0], edge[1], weight=0)
-        else:
+            game_board.place_coloured_track(edge[0], edge[1])
+        if not coloured:
             self._networkNoColTracks.add_node(game_board.get_nodes().get(chosen_node[0]))
             self._networkNoColTracks.add_edge(edge[0], edge[1], weight=0)
             game_board.place_track(edge[0], edge[1])
