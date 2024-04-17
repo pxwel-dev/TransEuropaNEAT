@@ -331,7 +331,7 @@ class NEATPlayer(Player):
         players = []
         for player in game_board.get_players():
             if player != self:
-                if networkx.utils.graphs_equal(player.get_network(), self.get_network()):
+                if networkx.utils.graphs_equal(player.get_networkNoColTracks(), self.get_networkNoColTracks()):
                     players.append(player)
         return players
 
