@@ -338,7 +338,7 @@ class NEATPlayer(Player):
     def choose_start_pos(self, game_board: GameBoard) -> str:
         self.allCities = game_board.get_cities_grouped()
         self.tracksToPlace = -1
-        city_id = self.make_move(game_board)[1]
+        city_id = self.make_move(game_board)[0][1]
         self.add_start_node(game_board.get_nodes().get(city_id))
         self.tracksToPlace = 2
         return city_id
