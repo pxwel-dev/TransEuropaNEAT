@@ -326,7 +326,20 @@ class NEATPlayer(Player):
         else:
             return 'w'
 
-    def check_players_in_network(self, game_board: GameBoard):
+    def evalNonTargetCityCapture(self, citiesNotInPlayerNets, opponentCityColoursLeft, opponentNum, colour,
+                                 colour_index,
+                                 game_board):
+        if citiesNotInPlayerNets[colour_index] != 0:
+            formatted_value = 1 - (opponentCityColoursLeft[colour_index] / citiesNotInPlayerNets[colour_index])
+        else:
+            notCaptured = sum(1 for player in self.check_opponents_in_network(game_board) if
+                              colour not in player.capturedCityCols)
+            if notCaptured != 0:
+                formatted_value = 1 - (notCaptured / opponentCityColoursLeft[colour_index])
+            else:
+                formatted_value = 1 - (opponentCityColoursLeft[colour_index] / opponentNum)
+        return formatted_value
+
     def check_opponents_in_network(self, game_board: GameBoard):
         players = []
         for player in game_board.get_players():
