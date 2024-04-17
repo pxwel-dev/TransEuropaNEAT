@@ -123,126 +123,91 @@ class NEATPlayer(Player):
                     elif city.get_colour() == Colour.blue:
                         citiesNotInPlayerNets[4] -= 1
 
-            if isinstance(move[0], Nodes.City) and move[0] not in self.citiesToCapture:
-                if move[0].get_colour() == Colour.red:
+                if isinstance(move[0], Nodes.City):
+                    if move[0].get_colour() == Colour.red:
+                        formatted.append(1)
+                        if move[0] not in self.citiesToCapture:
+                            formatted.append(self.evalNonTargetCityCapture(citiesNotInPlayerNets,
+                                                                           opponentCityColoursLeft,
+                                                                           opponentNum, Colour.red,
+                                                                           0, game_board))
+                        elif move[0] in self.citiesToCapture:
+                            formatted.append(1)
+                    elif move[0].get_colour() == Colour.yellow:
+                        formatted.append(2)
+                        if move[0] not in self.citiesToCapture:
+                            formatted.append(self.evalNonTargetCityCapture(citiesNotInPlayerNets,
+                                                                           opponentCityColoursLeft,
+                                                                           opponentNum, Colour.red,
+                                                                           1, game_board))
+                        elif move[0] in self.citiesToCapture:
+                            formatted.append(1)
+                    elif move[0].get_colour() == Colour.orange:
+                        formatted.append(3)
+                        if move[0] not in self.citiesToCapture:
+                            formatted.append(self.evalNonTargetCityCapture(citiesNotInPlayerNets,
+                                                                           opponentCityColoursLeft,
+                                                                           opponentNum, Colour.red,
+                                                                           2, game_board))
+                        elif move[0] in self.citiesToCapture:
+                            formatted.append(1)
+                    elif move[0].get_colour() == Colour.green:
+                        formatted.append(4)
+                        if move[0] not in self.citiesToCapture:
+                            formatted.append(self.evalNonTargetCityCapture(citiesNotInPlayerNets,
+                                                                           opponentCityColoursLeft,
+                                                                           opponentNum, Colour.red,
+                                                                           3, game_board))
+                        if move[0] in self.citiesToCapture:
+                            formatted.append(1)
+                    elif move[0].get_colour() == Colour.blue:
+                        formatted.append(5)
+                        if move[0] not in self.citiesToCapture:
+                            formatted.append(self.evalNonTargetCityCapture(citiesNotInPlayerNets,
+                                                                           opponentCityColoursLeft,
+                                                                           opponentNum, Colour.red,
+                                                                           4, game_board))
+                        if move[0] in self.citiesToCapture:
+                            formatted.append(1)
+                else:
+                    formatted.append(0)
                     formatted.append(1)
-                    if temp[0] != 0:
-                        formatted.append(1 - (opponentCityColoursLeft[0] / temp[0]))
-                    else:
-                        notCaptured = 0
-                        for player in self.check_players_in_network(game_board):
-                            if Colour.red not in player.capturedCityCols:
-                                notCaptured += 1
-                        if notCaptured != 0:
-                            formatted.append(1 - (notCaptured / opponentCityColoursLeft[0]))
-                        else:
-                            formatted.append(1 - (opponentCityColoursLeft[0] / opponentNum))
-                elif move[0].get_colour() == Colour.yellow:
-                    formatted.append(2)
-                    if temp[1] != 0:
-                        formatted.append(1 - (opponentCityColoursLeft[1] / temp[1]))
-                    else:
-                        notCaptured = 0
-                        for player in self.check_players_in_network(game_board):
-                            if Colour.yellow not in player.capturedCityCols:
-                                notCaptured += 1
-                        if notCaptured != 0:
-                            formatted.append(1 - (notCaptured / opponentCityColoursLeft[1]))
-                        else:
-                            formatted.append(1 - (opponentCityColoursLeft[1] / opponentNum))
-                elif move[0].get_colour() == Colour.orange:
-                    formatted.append(3)
-                    if temp[2] != 0:
-                        formatted.append(1 - (opponentCityColoursLeft[2] / temp[2]))
-                    else:
-                        notCaptured = 0
-                        for player in self.check_players_in_network(game_board):
-                            if Colour.orange not in player.capturedCityCols:
-                                notCaptured += 1
-                        if notCaptured != 0:
-                            formatted.append(1 - (notCaptured / opponentCityColoursLeft[2]))
-                        else:
-                            formatted.append(1 - (opponentCityColoursLeft[2] / opponentNum))
-                elif move[0].get_colour() == Colour.green:
-                    formatted.append(4)
-                    if temp[3] != 0:
-                        formatted.append(1 - (opponentCityColoursLeft[3] / temp[3]))
-                    else:
-                        notCaptured = 0
-                        for player in self.check_players_in_network(game_board):
-                            if Colour.green not in player.capturedCityCols:
-                                notCaptured += 1
-                        if notCaptured != 0:
-                            formatted.append(1 - (notCaptured / opponentCityColoursLeft[3]))
-                        else:
-                            formatted.append(1 - (opponentCityColoursLeft[3] / opponentNum))
-                elif move[0].get_colour() == Colour.blue:
-                    formatted.append(5)
-                    if temp[4] != 0:
-                        formatted.append(1 - (opponentCityColoursLeft[4] / temp[4]))
-                    else:
-                        notCaptured = 0
-                        for player in self.check_players_in_network(game_board):
-                            if Colour.blue not in player.capturedCityCols:
-                                notCaptured += 1
-                        if notCaptured != 0:
-                            formatted.append(1 - (notCaptured / opponentCityColoursLeft[4]))
-                        else:
-                            formatted.append(1 - (opponentCityColoursLeft[4] / opponentNum))
-            elif isinstance(move[0], Nodes.City) and move[0] in self.citiesToCapture:
-                if move[0].get_colour() == Colour.red:
-                    formatted.append(1)
-                    formatted.append(1)
-                elif move[0].get_colour() == Colour.yellow:
-                    formatted.append(2)
-                    formatted.append(1)
-                elif move[0].get_colour() == Colour.orange:
-                    formatted.append(3)
-                    formatted.append(1)
-                elif move[0].get_colour() == Colour.green:
-                    formatted.append(4)
-                    formatted.append(1)
-                elif move[0].get_colour() == Colour.blue:
-                    formatted.append(5)
-                    formatted.append(1)
-            else:
-                formatted.append(0)
-                formatted.append(1)
 
-            formatted.append(edgeCost)
-            formatted.append(move)
-            reformatted.append(formatted)
+                formatted.append(edgeCost)
+                formatted.append(self.colouredTracks)
+                formatted.append(move)
+                reformatted.append(formatted)
 
-        totalDistances = []
-        totalSingleTrackDists = []
-        singleTrackMoves = []
-        for formattedMove in reformatted:
-            temp = []
-            for i in [formattedMove[0], formattedMove[1], formattedMove[2],
-                      formattedMove[3], formattedMove[4]]:
-                if i != -1:
-                    temp.append(i)
-
-            totalDistances.append(min(temp))
-            if formattedMove[8] == 1:
+            totalDistances = []
+            totalSingleTrackDists = []
+            singleTrackMoves = []
+            for formattedMove in reformatted:
+                temp = []
                 for i in [formattedMove[0], formattedMove[1], formattedMove[2],
                           formattedMove[3], formattedMove[4]]:
                     if i != -1:
                         temp.append(i)
-                totalSingleTrackDists.append(min(temp))
-                singleTrackMoves.append(formattedMove)
-        bestMoves = []
-        if self.tracksToPlace == 1:
-            for i in range(0, 10):
-                if len(totalSingleTrackDists) != 0:
-                    bestMoves.append(singleTrackMoves[totalSingleTrackDists.index(min(totalSingleTrackDists))])
-                    totalSingleTrackDists.pop(totalSingleTrackDists.index(min(totalSingleTrackDists)))
-        else:
-            for i in range(0, 10):
-                if len(totalDistances) != 0:
-                    bestMoves.append(reformatted[totalDistances.index(min(totalDistances))])
-                    totalDistances.pop(totalDistances.index(min(totalDistances)))
-        return bestMoves
+
+                totalDistances.append(min(temp))
+                if formattedMove[8] == 1:
+                    for i in [formattedMove[0], formattedMove[1], formattedMove[2],
+                              formattedMove[3], formattedMove[4]]:
+                        if i != -1:
+                            temp.append(i)
+                    totalSingleTrackDists.append(min(temp))
+                    singleTrackMoves.append(formattedMove)
+            bestMoves = []
+            if self.tracksToPlace == 1:
+                for i in range(0, 10):
+                    if len(totalSingleTrackDists) != 0:
+                        bestMoves.append(singleTrackMoves[totalSingleTrackDists.index(min(totalSingleTrackDists))])
+                        totalSingleTrackDists.pop(totalSingleTrackDists.index(min(totalSingleTrackDists)))
+            else:
+                for i in range(0, 10):
+                    if len(totalDistances) != 0:
+                        bestMoves.append(reformatted[totalDistances.index(min(totalDistances))])
+                        totalDistances.pop(totalDistances.index(min(totalDistances)))
+            return bestMoves
 
     def make_move(self, game_board: GameBoard) -> [str]:
         if not self.has_won():
