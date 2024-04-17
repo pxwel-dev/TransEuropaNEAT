@@ -289,6 +289,7 @@ class NEATPlayer(Player):
             return 'w'
 
     def check_players_in_network(self, game_board: GameBoard):
+    def check_opponents_in_network(self, game_board: GameBoard):
         players = []
         for player in game_board.get_players():
             if player != self:
