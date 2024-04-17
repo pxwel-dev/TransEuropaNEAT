@@ -247,44 +247,82 @@ class NEATPlayer(Player):
     def make_move(self, game_board: GameBoard) -> [str]:
         if not self.has_won():
             inputs = self.create_network_inputs(self.find_all_possible_moves(game_board), game_board)
-            outputs = []
-            for move in inputs:
-                outputs.append(self.neuralNetwork.activate([move[0], move[1], move[2], move[3], move[4], move[5],
-                                                            move[6], move[7], move[8]]))
+            inputIndex = []
+            moveValues = []
+            moveTypes = []
+            for i in range(0, len(inputs)):
+                output = self.neuralNetwork.activate([inputs[i][0], inputs[i][1], inputs[i][2], inputs[i][3],
+                                                      inputs[i][4], inputs[i][5], inputs[i][6], inputs[i][7],
+                                                      inputs[i][8], inputs[i][9]])
+                for j in range(0, 3):
+                    inputIndex.append(i)
+                    moveValues.append(output[j])
+                    moveTypes.append(j)
             while True:
-                choice = inputs[outputs.index(max(outputs))][9]
-                # print(inputs[outputs.index(max(outputs))])
-                cost = abs(inputs[outputs.index(max(outputs))][8])
-                if self.tracksToPlace != -1:
-                    if cost == 1 and self.tracksToPlace - 1 >= 0:
-                        self.tracksToPlace -= 1
-                        self.fitness -= 0.01
-                        # print("{0} Move: {1} -> {2}"
-                        #       .format(self.name, str(choice[1].get_id()), str(choice[0].get_id())))
-                        break
-                    elif cost == 2 and self.tracksToPlace - 2 == 0:
-                        self.tracksToPlace -= 2
-                        self.fitness -= 0.02
-                        # print("{0} Move: {1} -> {2}"
-                        #       .format(self.name, str(choice[1].get_id()), str(choice[0].get_id())))
-                        break
-                    else:
-                        if len(outputs) > 1:
-                            inputs.pop(outputs.index(max(outputs)))
-                            outputs.pop(outputs.index(max(outputs)))
-                        else:
-                            # self.tracksToPlace -= 1
-                            self.fitness -= 1
-                            # print("NO MOVES LEFT: TTP: {0} T: {1} MOVES: {2}".format(self.tracksToPlace, cost, [i[6] for i in temp]))
-                            return None
+                if len(moveValues) > 0:
+                    currentBestMoveIndex = moveValues.index(max(moveValues))
+                    bestMove = inputs[inputIndex[currentBestMoveIndex]][10]
+                    bestMoveCost = abs(inputs[inputIndex[currentBestMoveIndex]][8])
+                    bestMoveType = moveTypes[currentBestMoveIndex]
                 else:
-                    # print("{0} City Captured: {1}"
-                    #       .format(self.name, str(choice[1].get_name())))
+                    # print("NO MOVES LEFT - SKIP or NO COLOURED")
+                    self.noMovesLeftErrors += 1
+                    self.fitness -= 1
+                    return -1
+                if self.tracksToPlace != -1:
+                    if bestMoveType == 0 or (bestMoveType == 1 and self.colouredTracks != 0):
+                        if bestMoveCost == 1 and self.tracksToPlace - 1 >= 0:
+                            self.tracksToPlace -= 1
+                            self.tracksUsed += 1
+                            print("{0} Move: {1} -> {2}, Coloured track: {3}"
+                                  .format(self.name,
+                                          str(bestMove[1].get_id()),
+                                          str(bestMove[0].get_id()),
+                                          bool(bestMoveType)))
+                            break
+                        elif bestMoveCost == 2 and self.tracksToPlace - 2 == 0 and not self.skippedTurn:
+                            self.tracksToPlace -= 2
+                            self.tracksUsed += 2
+                            print("{0} Move: {1} -> {2}, Coloured track: {3}"
+                                  .format(self.name,
+                                          str(bestMove[1].get_id()),
+                                          str(bestMove[0].get_id()),
+                                          bool(bestMoveType)))
+                            break
+                        else:
+                            if len(moveValues) > 1:
+                                moveValues.pop(currentBestMoveIndex)
+                                moveTypes.pop(currentBestMoveIndex)
+                                inputIndex.pop(currentBestMoveIndex)
+                            else:
+                                # print("NO MOVES LEFT - TURNS")
+                                self.noMovesLeftErrors += 1
+                                self.fitness -= 1
+                                return -1
+                    elif bestMoveType == 2 and not self.skippedTurn and self.tracksToPlace != 2:
+                        self.skippedTurn = True
+                        self.movesSkipped += 1
+                        return None
+                    else:
+                        if len(moveValues) > 1:
+                            moveValues.pop(currentBestMoveIndex)
+                            moveTypes.pop(currentBestMoveIndex)
+                            inputIndex.pop(currentBestMoveIndex)
+                        else:
+                            # print("NO MOVES LEFT - SKIP or NO COLOURED")
+                            self.noMovesLeftErrors += 1
+                            self.fitness -= 1
+                            return -1
+                else:
+                    print("{0} Chosen Starting City: {1}"
+                          .format(self.name, str(bestMove[1].get_name())))
                     break
+
             if self.has_won():
                 return 'w'
             else:
-                return [choice[0].get_id(), choice[1].get_id()]
+                self.colouredTracks -= bestMoveType
+                return [[bestMove[0].get_id(), bestMove[1].get_id()], bool(bestMoveType)]
         else:
             return 'w'
 
