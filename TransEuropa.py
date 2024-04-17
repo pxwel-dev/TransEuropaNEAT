@@ -18,7 +18,6 @@ class TransEuropa:
 			player.reset()
 
 	def play_game(self):
-
 		for player in self.__board.get_players():
 			if isinstance(player, HumanPlayer):
 				print("{0}'s cities to capture:".format(player.name))
@@ -27,18 +26,19 @@ class TransEuropa:
 				print([[city.get_name(), city.get_id()] for city in player.citiesToCapture])
 				while input("\nPress enter to continue: ") != '':
 					continue
-
-				for i in range(0, 100):
-					print("=====FLUSHING TERMINAL=====")
+		#
+		# 		for i in range(0, 100):
+		# 			print("=====FLUSHING TERMINAL=====")
 		for player in self.__board.get_players():
-			if isinstance(player, NEATPlayer):
-				print(player.name + ': ' + player.choose_start_pos(self.__board))
-				#player.choose_start_pos(self.__board)
-			elif isinstance(player, ImpMaxNPlayer):
-				print(player.name + ': ' + player.choose_start_pos(self.__board))
-				#player.choose_start_pos(self.__board)
-			else:
-				player.choose_start_pos(self.__board)
+			# if isinstance(player, NEATPlayer):
+			# 	print(player.name + ': ' + player.choose_start_pos(self.__board))
+			# 	#player.choose_start_pos(self.__board)
+			# elif isinstance(player, ImpMaxNPlayer):
+			# 	print(player.name + ': ' + player.choose_start_pos(self.__board))
+			# 	#player.choose_start_pos(self.__board)
+			# else:
+			# 	player.choose_start_pos(self.__board)
+			player.choose_start_pos(self.__board)
 		game_won = False
 		self.turn_count = 0
 		while not game_won:
