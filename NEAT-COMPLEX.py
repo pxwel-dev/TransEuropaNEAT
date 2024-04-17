@@ -13,6 +13,9 @@ class NEATPlayer(Player):
         self.citiesToCapture = []
         self.neuralNetwork = neuralNet
         self.allCities = None
+        self.tracksUsed = 0
+        self.movesSkipped = 0
+        self.noMovesLeftErrors = 0
 
     def set_cities(self, cities):
         self._cities = cities
