@@ -193,14 +193,3 @@ class NEATPlayer(Player):
                 self.fitness += 0.2
         return Player.has_won(self)
 
-    def network_merge(self, game_board: GameBoard):
-        ret = False
-        for player in game_board.get_players():
-            if player != self:
-                for node in player.get_network().nodes:
-                    if node in self._network:
-                        self._network = networkx.compose(self._network,
-                                                         player.get_network())
-                        ret = True
-                        break
-        return ret

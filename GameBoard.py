@@ -144,6 +144,9 @@ class GameBoard:
 	def place_track(self, edge0, edge1):
 		self.__map[edge0][edge1]['weight'] = 0
 
+	def place_coloured_track(self, edge0, edge1):
+		self.__map[edge0][edge1]['weight'] = 100
+
 	def get_cities_grouped(self):
 		cities = [0, 0, 0, 0, 0]
 		for city in self._cities.values():

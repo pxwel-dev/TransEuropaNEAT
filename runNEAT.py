@@ -1,8 +1,7 @@
 import random
 
 from HumanPlayer import HumanPlayer
-from AllBots.NEAT_SIMPLEv4Player import NEATPlayer as NEAT_SIMPLEv4
-from AllBots.NEAT_SIMPLEPlayer import NEATPlayer as NEAT_SIMPLE
+from NEAT_COMPLEX import NEATPlayer
 from TransEuropa import TransEuropa
 import neat
 import os
@@ -45,8 +44,11 @@ def eval_genomes(genomes, conf):
                 genome.fitness = temp_genome.fitness
                 fitness.append(genome.fitness)
 
-            file = open("AllBots/fitnessDataTest", 'a')
+            file = open("fitnessDataTest", 'a')
             file.write(str(max(fitness)) + "\n")
+            file.close()
+            file = open("fitnessDataAveragesMean", 'a')
+            file.write(str((sum(fitness) / len(fitness))) + "\n")
             file.close()
             break
         else:
@@ -72,12 +74,12 @@ def multiprocessing_eval(genomes, conf):
             for j in range(0, NUMBER_OF_GAMES):
                 print("Starting game {0}/{1}:{2}...".format(count, int(len(genomes) / 6), j + 1))
                 formattedPlayers = [
-                    NEAT_SIMPLE("1", neat.nn.FeedForwardNetwork.create(playerGenomes[0], conf)),
-                    NEAT_SIMPLE("2", neat.nn.FeedForwardNetwork.create(playerGenomes[1], conf)),
-                    NEAT_SIMPLE("3", neat.nn.FeedForwardNetwork.create(playerGenomes[2], conf)),
-                    NEAT_SIMPLE("4", neat.nn.FeedForwardNetwork.create(playerGenomes[3], conf)),
-                    NEAT_SIMPLE("5", neat.nn.FeedForwardNetwork.create(playerGenomes[4], conf)),
-                    NEAT_SIMPLE("6", neat.nn.FeedForwardNetwork.create(playerGenomes[5], conf))]
+                    NEATPlayer("1", neat.nn.FeedForwardNetwork.create(playerGenomes[0], conf)),
+                    NEATPlayer("2", neat.nn.FeedForwardNetwork.create(playerGenomes[1], conf)),
+                    NEATPlayer("3", neat.nn.FeedForwardNetwork.create(playerGenomes[2], conf)),
+                    NEATPlayer("4", neat.nn.FeedForwardNetwork.create(playerGenomes[3], conf)),
+                    NEATPlayer("5", neat.nn.FeedForwardNetwork.create(playerGenomes[4], conf)),
+                    NEATPlayer("6", neat.nn.FeedForwardNetwork.create(playerGenomes[5], conf))]
                 game = TransEuropa(formattedPlayers, "classic.txt")
                 fitnessScore = game.play_game()
                 playerGenomes[0].fitness += fitnessScore[0]
@@ -90,37 +92,83 @@ def multiprocessing_eval(genomes, conf):
                       "Game {0}/{1}:{2} Summary\n"
                       "Rounds: {9}\n"
                       "=================================\n"
-                      "Cumulative fitness in {10} games:\n"
+                      "Game statistic for game {2}/{10}:\n"
                       "=================================\n"
-                      "Player 1: {3}\n"
-                      "Player 2: {4}\n"
-                      "Player 3: {5}\n"
-                      "Player 4: {6}\n"
-                      "Player 5: {7}\n"
-                      "Player 6: {8}\n"
+                      "| Name     | Fitness | Cities Left |Tracks Used | ColTracks Left | Skipped Turns | No Moves "
+                      "Error Count |\n"
+                      "| Player 1 |   {3}   |     {35}    |    {11}    |      {17}      |      {23}     |          "
+                      "{29}        |\n"
+                      "| Player 2 |   {4}   |     {36}    |    {12}    |      {18}      |      {24}     |          "
+                      "{30}        |\n"
+                      "| Player 3 |   {5}   |     {37}    |    {13}    |      {19}      |      {25}     |          "
+                      "{31}        |\n"
+                      "| Player 4 |   {6}   |     {38}    |    {14}    |      {20}      |      {26}     |          "
+                      "{32}        |\n"
+                      "| Player 5 |   {7}   |     {39}    |    {15}    |      {21}      |      {27}     |          "
+                      "{33}        |\n"
+                      "| Player 6 |   {8}   |     {40}    |    {16}    |      {22}      |      {28}     |          "
+                      "{34}        |\n"
                       "=================================".format(count, int(len(genomes) / 6), j + 1,
-                                                                 playerGenomes[0].fitness,
-                                                                 playerGenomes[1].fitness,
-                                                                 playerGenomes[2].fitness,
-                                                                 playerGenomes[3].fitness,
-                                                                 playerGenomes[4].fitness,
-                                                                 playerGenomes[5].fitness,
+                                                                 round(fitnessScore[0], 2),
+                                                                 round(fitnessScore[1], 2),
+                                                                 round(fitnessScore[2], 2),
+                                                                 round(fitnessScore[3], 2),
+                                                                 round(fitnessScore[4], 2),
+                                                                 round(fitnessScore[5], 2),
                                                                  game.turn_count,
-                                                                 NUMBER_OF_GAMES))
-
+                                                                 NUMBER_OF_GAMES,
+                                                                 game.get_players_post_game()[0].tracksUsed,
+                                                                 game.get_players_post_game()[1].tracksUsed,
+                                                                 game.get_players_post_game()[2].tracksUsed,
+                                                                 game.get_players_post_game()[3].tracksUsed,
+                                                                 game.get_players_post_game()[4].tracksUsed,
+                                                                 game.get_players_post_game()[5].tracksUsed,
+                                                                 game.get_players_post_game()[0].colouredTracks,
+                                                                 game.get_players_post_game()[1].colouredTracks,
+                                                                 game.get_players_post_game()[2].colouredTracks,
+                                                                 game.get_players_post_game()[3].colouredTracks,
+                                                                 game.get_players_post_game()[4].colouredTracks,
+                                                                 game.get_players_post_game()[5].colouredTracks,
+                                                                 game.get_players_post_game()[0].movesSkipped,
+                                                                 game.get_players_post_game()[1].movesSkipped,
+                                                                 game.get_players_post_game()[2].movesSkipped,
+                                                                 game.get_players_post_game()[3].movesSkipped,
+                                                                 game.get_players_post_game()[4].movesSkipped,
+                                                                 game.get_players_post_game()[5].movesSkipped,
+                                                                 # None,
+                                                                 # None,
+                                                                 # None,
+                                                                 # None,
+                                                                 # None,
+                                                                 # None,
+                                                                 game.get_players_post_game()[0].noMovesLeftErrors,
+                                                                 game.get_players_post_game()[1].noMovesLeftErrors,
+                                                                 game.get_players_post_game()[2].noMovesLeftErrors,
+                                                                 game.get_players_post_game()[3].noMovesLeftErrors,
+                                                                 game.get_players_post_game()[4].noMovesLeftErrors,
+                                                                 game.get_players_post_game()[5].noMovesLeftErrors,
+                                                                 len(game.get_players_post_game()[0].citiesToCapture),
+                                                                 len(game.get_players_post_game()[1].citiesToCapture),
+                                                                 len(game.get_players_post_game()[2].citiesToCapture),
+                                                                 len(game.get_players_post_game()[3].citiesToCapture),
+                                                                 len(game.get_players_post_game()[4].citiesToCapture),
+                                                                 len(game.get_players_post_game()[5].citiesToCapture)))
 
             playerGenomes.clear()
     return genomes
 
+
 def test_best_network(conf):
-    f = open("AllBots/NEAT-SIMPLEv6.pickle", "rb")
+    f = open("NEAT-COMPLEX-V2.pickle", "rb")
     best_player = pickle.load(f)
-    game = TransEuropa([NEAT_SIMPLEv4("NeuralNetwork", neat.nn.FeedForwardNetwork.create(best_player, conf)), HumanPlayer("Pawel")], "classic.txt")
+    game = TransEuropa(
+        [NEATPlayer("NeuralNetwork", neat.nn.FeedForwardNetwork.create(best_player, conf)), HumanPlayer("Pawel")],
+        "classic.txt")
     game.play_game()
 
 
 def run_neat(conf, name):
-    # pop = neat.Checkpointer.restore_checkpoint('neat-checkpoint-182')
+    # pop = neat.Checkpointer.restore_checkpoint('neat-checkpoint-71')
     pop = neat.Population(conf)
     pop.add_reporter(neat.StdOutReporter(True))
     stats = neat.StatisticsReporter()
@@ -135,40 +183,12 @@ def run_neat(conf, name):
 
 if __name__ == "__main__":
     local_dir = os.path.dirname(__file__)
-    config_path = os.path.join(local_dir, "NEATconfig.txt")
+
+    config_path = os.path.join(local_dir, "NEAT_COMPLEX_Config.txt")
 
     config = neat.Config(neat.DefaultGenome, neat.DefaultReproduction,
-                         neat.DefaultSpeciesSet, neat.DefaultStagnation,
-                         config_path)
-
-    configV2_path = os.path.join(local_dir, "NEATconfigV2.txt")
-
-    configV2 = neat.Config(neat.DefaultGenome, neat.DefaultReproduction,
-                         neat.DefaultSpeciesSet, neat.DefaultStagnation,
-                         configV2_path)
-
-    configV3_path = os.path.join(local_dir, "NEATconfigV3.txt")
-
-    configV3 = neat.Config(neat.DefaultGenome, neat.DefaultReproduction,
-
-
                            neat.DefaultSpeciesSet, neat.DefaultStagnation,
-                           configV3_path)
+                           config_path)
 
-    configV4_path = os.path.join(local_dir, "NEATconfigV4.txt")
-
-    configV4 = neat.Config(neat.DefaultGenome, neat.DefaultReproduction,
-                           neat.DefaultSpeciesSet, neat.DefaultStagnation,
-                           configV4_path)
-
-    # run_neat(config, "NEAT-SIMPLE.pickle")
-    # run_neat(configV2, "NEAT-SIMPLEv2.pickle")
-    # run_neat(configV3, "NEAT-SIMPLEv3.pickle")
-    # run_neat(configV4, "NEAT-SIMPLEv5.pickle")
-    # run_neat(configV4, "NEAT-SIMPLEv6.pickle")
-    test_best_network(configV4)
-    # bot_battle1v1(config, configV4)
-    # bot_battle1v1(config, configV2, configV3, configV4)
-    # imp_max_n_battle()
-    # neat_v6_vs_imp_max_n(configV4)
-    # final_tests_for_poster(config, configV2, configV3, configV4)
+    # run_neat(config, "NEAT-COMPLEX-V2.pickle")
+    test_best_network(config)
