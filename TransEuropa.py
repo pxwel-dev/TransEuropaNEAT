@@ -71,7 +71,6 @@ class TransEuropa:
 
 	def end_game(self, turns):
 		for player in self.__players:
-
 			if player.has_won():
 				print("Round {0} | Winner found! | Winner: {1}".format(str(turns), player.name))
 		fitnessScore = []
