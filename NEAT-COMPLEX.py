@@ -305,6 +305,14 @@ class NEATPlayer(Player):
                 formatted_value = 1 - (opponentCityColoursLeft[colour_index] / opponentNum)
         return formatted_value
 
+    def check_city_in_opponent_networks(self, game_board: GameBoard, city: Nodes.City):
+        total = 0
+        for player in game_board.get_players():
+            if player != self:
+                if city in player.get_networkAllTracks().nodes:
+                    total += 1
+        return total
+
     def check_opponents_in_network(self, game_board: GameBoard):
         players = []
         for player in game_board.get_players():
