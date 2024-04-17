@@ -16,7 +16,7 @@ class HumanPlayer(Player):
         self.add_start_node(game_board.get_nodes().get(coord))
         return coord
 
-    def make_move(self, game_board: GameBoard) -> [str, str]:  # node to add to network should always be first
+    def make_move(self, game_board: GameBoard) -> [[str, str], bool]:  # node to add to network should always be first
         self.network_merge(game_board)
         if not self.has_won():
             while True:
@@ -39,8 +39,11 @@ class HumanPlayer(Player):
                     break
                 except KeyError:
                     print("Invalid move, try again.")
+            coloured = None
+            while coloured is None:
+                coloured = int(input("Place coloured track? 1: Yes | 0: No"))
             self.has_won()
-            return coords
+            return [coords, bool(coloured)]
         else:
             return 'w'
 
@@ -50,7 +53,7 @@ class HumanPlayer(Player):
 
     def has_won(self):
         for city in self.citiesToCapture:
-            if city in self.get_network().nodes:
+            if city in self.get_networkNoColTracks().nodes:
                 print("{0} has captured: {1}"
                       .format(self.name, str(city.get_name())))
                 self.citiesToCapture.remove(city)
