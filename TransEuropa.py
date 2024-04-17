@@ -83,6 +83,9 @@ class TransEuropa:
 	def get_players(self) -> []:
 		return self.__players
 
+	def get_players_post_game(self) -> []:
+		return self.__board.get_players()
+
 	def get_winner(self):
 		for player in self.__players:
 			if player.has_won():
