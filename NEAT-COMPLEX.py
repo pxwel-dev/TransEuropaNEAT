@@ -219,7 +219,7 @@ class NEATPlayer(Player):
         for formattedMove in reformatted:
             temp = []
             for i in [formattedMove[0], formattedMove[1], formattedMove[2],
-                                  formattedMove[3], formattedMove[4]]:
+                      formattedMove[3], formattedMove[4]]:
                 if i != -1:
                     temp.append(i)
 
