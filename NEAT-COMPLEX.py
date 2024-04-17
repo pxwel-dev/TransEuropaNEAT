@@ -345,9 +345,9 @@ class NEATPlayer(Player):
 
     def has_won(self):
         for city in self.citiesToCapture:
-            if city in self.get_network().nodes:
-                # print("{0} has captured: {1}"
-                #       .format(self.name, str(city.get_name())))
+            if city in self.get_networkAllTracks().nodes:
+                print("{0} has captured: {1}"
+                      .format(self.name, str(city.get_name())))
                 self.capturedCityCols.append(city.get_colour())
                 self.citiesToCapture.remove(city)
                 self.fitness += 0.2
