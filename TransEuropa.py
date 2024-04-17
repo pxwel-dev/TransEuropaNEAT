@@ -47,17 +47,19 @@ class TransEuropa:
 			for player in self.__board.get_players():
 				if not player.has_won() and not game_won:
 					player.tracksToPlace = 2
+					player.skippedTurn = False
 					while player.tracksToPlace > 0 and not player.has_won():
 						player.network_merge(self.__board)
-						co_ords = player.make_move(self.__board)
-						if co_ords == 'w':
+						player_move_state = player.make_move(self.__board)
+						if player_move_state == 'w':
 							game_won = True
 							break
-						if co_ords is None:
-							print("Skipping...")
-							return [0 for i in self.__board.get_players()]
+						elif player_move_state is None:
+							pass
+						elif player_move_state == -1:
+							break
 						else:
-							player.add_node_to_network(self.__board, co_ords)
+							player.add_node_to_network(self.__board, player_move_state[0], player_move_state[1])
 							player.network_merge(self.__board)
 							if player.has_won():
 								game_won = True
