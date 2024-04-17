@@ -105,23 +105,23 @@ class NEATPlayer(Player):
             else:
                 formatted.append(-1)
 
-            citiesNotInPlayerNets = copy.deepcopy(self.allCities)
-            for city in game_board.get_cities().values():
-                city_in_network = 0
-                for player in game_board.get_players():
-                    if city in player.get_networkAllTracks().nodes:
-                        city_in_network += 1
-                if city_in_network > 0:
-                    if city.get_colour() == Colour.red:
-                        citiesNotInPlayerNets[0] -= 1
-                    elif city.get_colour() == Colour.yellow:
-                        citiesNotInPlayerNets[1] -= 1
-                    elif city.get_colour() == Colour.orange:
-                        citiesNotInPlayerNets[2] -= 1
-                    elif city.get_colour() == Colour.green:
-                        citiesNotInPlayerNets[3] -= 1
-                    elif city.get_colour() == Colour.blue:
-                        citiesNotInPlayerNets[4] -= 1
+            # citiesNotInPlayerNets = copy.deepcopy(self.allCities)
+            # for city in game_board.get_cities().values():
+            #     city_in_network = 0
+            #     for player in game_board.get_players():
+            #         if city in player.get_networkAllTracks().nodes:
+            #             city_in_network += 1
+            #     if city_in_network > 0:
+            #         if city.get_colour() == Colour.red:
+            #             citiesNotInPlayerNets[0] -= 1
+            #         elif city.get_colour() == Colour.yellow:
+            #             citiesNotInPlayerNets[1] -= 1
+            #         elif city.get_colour() == Colour.orange:
+            #             citiesNotInPlayerNets[2] -= 1
+            #         elif city.get_colour() == Colour.green:
+            #             citiesNotInPlayerNets[3] -= 1
+            #         elif city.get_colour() == Colour.blue:
+            #             citiesNotInPlayerNets[4] -= 1
 
                 if isinstance(move[0], Nodes.City):
                     if move[0].get_colour() == Colour.red:
