@@ -44,6 +44,7 @@ class Player:
         return self._networkAllTracks
 
     def add_start_node(self, node: Node):
+        self._networkAllTracks.add_node(node)
         self._networkNoColTracks.add_node(node)
 
     def add_node_to_network(self, game_board: GameBoard, chosen_node: [str, str], coloured: bool = False):
