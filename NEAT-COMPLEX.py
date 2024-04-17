@@ -291,19 +291,29 @@ class NEATPlayer(Player):
         else:
             return 'w'
 
-    def evalNonTargetCityCapture(self, citiesNotInPlayerNets, opponentCityColoursLeft, opponentNum, colour,
-                                 colour_index,
-                                 game_board):
-        if citiesNotInPlayerNets[colour_index] != 0:
-            formatted_value = 1 - (opponentCityColoursLeft[colour_index] / citiesNotInPlayerNets[colour_index])
-        else:
-            notCaptured = sum(1 for player in self.check_opponents_in_network(game_board) if
-                              colour not in player.capturedCityCols)
-            if notCaptured != 0:
-                formatted_value = 1 - (notCaptured / opponentCityColoursLeft[colour_index])
-            else:
-                formatted_value = 1 - (opponentCityColoursLeft[colour_index] / opponentNum)
-        return formatted_value
+    def evalNonTargetCityCapture(self, opponentCityColoursLeft: list, opponentNum: int, colour: Colour,
+                                 colour_index: int, game_board: GameBoard, city: Nodes.City):
+
+        inOppNetworksCount = self.check_city_in_opponent_networks(game_board, city)
+        mergedOppsUncapCol = sum(1 for player in self.check_opponents_in_network(game_board) if
+                                      colour not in player.capturedCityCols)
+
+        # Avoid division by zero
+        if opponentNum - inOppNetworksCount == 0:
+            return 1
+
+        # Calculate risk
+        risk_from_merged_opponents = \
+            (mergedOppsUncapCol / opponentCityColoursLeft[colour_index]) if (
+                    opponentCityColoursLeft[colour_index] > 0) else 0
+        risk_from_opponents = \
+            (opponentCityColoursLeft[colour_index] / (opponentNum - inOppNetworksCount))
+
+        # Combine risks and normalize
+        combined_risk = (1 - risk_from_merged_opponents) * (1 - risk_from_opponents)
+        normalized_risk = max(0, combined_risk)  # Ensure risk is non-negative
+
+        return normalized_risk
 
     def check_city_in_opponent_networks(self, game_board: GameBoard, city: Nodes.City):
         total = 0
