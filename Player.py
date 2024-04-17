@@ -17,12 +17,13 @@ class Player:
         self._networkAllTracks = Graph()
         self._networkNoColTracks = Graph()
         self._cities = {}
+        self.skippedTurn = False
 
     def reset(self):
         self._networkAllTracks = Graph()
         self._networkNoColTracks = Graph()
         self._cities = {}
-        self.tracksToPlace = 2
+        self.skippedTurn = False
 
     def set_cities(self, cities):
         """ Set cities for a player, any overide must run Player.set_cities()
