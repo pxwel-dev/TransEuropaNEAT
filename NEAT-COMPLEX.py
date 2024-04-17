@@ -105,23 +105,23 @@ class NEATPlayer(Player):
             else:
                 formatted.append(-1)
 
-            temp = copy.deepcopy(self.allCities)
+            citiesNotInPlayerNets = copy.deepcopy(self.allCities)
             for city in game_board.get_cities().values():
                 city_in_network = 0
                 for player in game_board.get_players():
-                    if city in player.get_network().nodes:
+                    if city in player.get_networkAllTracks().nodes:
                         city_in_network += 1
                 if city_in_network > 0:
                     if city.get_colour() == Colour.red:
-                        temp[0] -= 1
+                        citiesNotInPlayerNets[0] -= 1
                     elif city.get_colour() == Colour.yellow:
-                        temp[1] -= 1
+                        citiesNotInPlayerNets[1] -= 1
                     elif city.get_colour() == Colour.orange:
-                        temp[2] -= 1
+                        citiesNotInPlayerNets[2] -= 1
                     elif city.get_colour() == Colour.green:
-                        temp[3] -= 1
+                        citiesNotInPlayerNets[3] -= 1
                     elif city.get_colour() == Colour.blue:
-                        temp[4] -= 1
+                        citiesNotInPlayerNets[4] -= 1
 
             if isinstance(move[0], Nodes.City) and move[0] not in self.citiesToCapture:
                 if move[0].get_colour() == Colour.red:
