@@ -20,6 +20,10 @@ class Player:
         self.skippedTurn = False
 
     def reset(self):
+        self.tracksToPlace = 2
+        self.colouredTracks = 3
+        self.fitness = 0
+        self.capturedCityCols = []
         self._networkAllTracks = Graph()
         self._networkNoColTracks = Graph()
         self._cities = {}
