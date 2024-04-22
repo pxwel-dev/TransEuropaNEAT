@@ -287,11 +287,14 @@ class NEATPlayer(Player):
             return 'w'
 
     def evalNonTargetCityCapture(self, opponentCityColoursLeft: list, opponentNum: int, colour: Colour,
-                                 colour_index: int, game_board: GameBoard, city: Nodes.City):
+                                 colour_index: int, game_board: GameBoard, city: Nodes.City, subNetNode: Nodes.Node):
 
         inOppNetworksCount = self.check_city_in_opponent_networks(game_board, city)
-        mergedOppsUncapCol = sum(1 for player in self.check_opponents_in_network(game_board) if
-                                      colour not in player.capturedCityCols)
+
+        mergedOpps = [player for player in game_board.get_players() if player != self
+                      and self.check_opponent_in_subNetwork(game_board, player, subNetNode)]
+
+        mergedOppsUncapCol = sum(1 for player in mergedOpps if colour not in player.capturedCityCols)
 
         # Avoid division by zero
         if opponentNum - inOppNetworksCount == 0:
