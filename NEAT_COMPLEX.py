@@ -68,7 +68,7 @@ class NEATPlayer(Player):
                     try:
                         network = networkx.multi_source_dijkstra_path_length(
                             game_board.get_map(), player.get_networkNoColTracks().nodes, weight='weight')
-                        if networkx.utils.graphs_equal(player.get_networkNoColTracks(), self.get_networkNoColTracks()):
+                        if self.check_opponent_in_subNetwork(game_board, player, move[1]):
                             opponentNetworkDistances.append(-1)
                         else:
                             opponentNetworkDistances.append(network[move[0]] + edgeCost)
