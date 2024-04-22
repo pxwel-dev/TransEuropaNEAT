@@ -44,7 +44,7 @@ class NEATPlayer(Player):
         for move in moves:
             formatted = []
 
-            minCityDistances = [-1, -1, -1, -1, -1]
+            minCityDistances = [-1] * 5
 
             edgeCost = int(game_board.get_map().get_edge_data(move[0], move[1]).get('weight'))
 
