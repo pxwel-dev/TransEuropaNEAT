@@ -1,7 +1,6 @@
 from GameBoard import GameBoard
 from HumanPlayer import HumanPlayer
-from AllBots.NEAT_SIMPLEv6Player import NEATPlayer
-from AllBots.ImperfectMaxN import ImpMaxNPlayer
+from NEAT_COMPLEX import NEATPlayer
 
 
 class TransEuropa:
