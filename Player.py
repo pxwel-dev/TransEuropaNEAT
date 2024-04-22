@@ -67,11 +67,11 @@ class Player:
             if player != self:
                 for node in player.get_networkNoColTracks().nodes:
                     if node in self._networkAllTracks:
-                        self._networkAllTracks = networkx.compose(self._networkAllTracks,
-                                                                  player.get_networkNoColTracks())
-                        if node in self._networkNoColTracks:
-                            self._networkNoColTracks = networkx.compose(self._networkNoColTracks,
-                                                                        player.get_networkNoColTracks())
+                        subGraph = player.get_networkNoColTracks().subgraph(
+                            networkx.node_connected_component(player.get_networkNoColTracks(), node)).copy()
+
+                        self._networkAllTracks = networkx.compose(self._networkAllTracks, subGraph)
+                        self._networkNoColTracks = networkx.compose(self._networkNoColTracks, subGraph)
                         ret = True
                         break
         return ret
