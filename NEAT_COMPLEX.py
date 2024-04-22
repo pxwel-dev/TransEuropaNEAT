@@ -318,13 +318,22 @@ class NEATPlayer(Player):
                     total += 1
         return total
 
-    def check_opponents_in_network(self, game_board: GameBoard):
-        players = []
-        for player in game_board.get_players():
-            if player != self:
-                if networkx.utils.graphs_equal(player.get_networkNoColTracks(), self.get_networkNoColTracks()):
-                    players.append(player)
-        return players
+    def check_opponent_in_subNetwork(self, game_board: GameBoard, opp: Player, subNetNode: Nodes.Node):
+        # players = []
+        # for player in game_board.get_players():
+        #     if player != self:
+        #         if networkx.utils.graphs_equal(player.get_networkNoColTracks(), self.get_networkNoColTracks()):
+        #             players.append(player)
+        # return players
+        try:
+            subGraph = self.get_networkNoColTracks().subgraph(
+                networkx.node_connected_component(self.get_networkNoColTracks(), subNetNode)).copy()
+        except KeyError:
+            return False
+        for node in subGraph.nodes:
+            if node in opp.get_networkAllTracks().nodes:
+                return True
+        return False
 
     def choose_start_pos(self, game_board: GameBoard) -> str:
         self.allCities = game_board.get_cities_grouped()
