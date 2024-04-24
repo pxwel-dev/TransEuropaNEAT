@@ -260,7 +260,7 @@ class NEATPlayer(Player):
             if self.has_won():
                 return 'w'
             else:
-                self.colouredTracks -= bestMoveType
+                self.colouredTracks -= (1 if bestMoveType == 1 else 0)
                 return [[bestMove[0].get_id(), bestMove[1].get_id()], bool(bestMoveType)]
         else:
             return 'w'
