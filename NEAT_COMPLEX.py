@@ -237,9 +237,10 @@ class NEATPlayer(Player):
                                 self.noMovesLeftErrors += 1
                                 self.fitness -= 1
                                 return -1
-                    elif bestMoveType == 2 and not self.skippedTurn and self.tracksToPlace != 2:
+                    elif bestMoveType == 2 and not self.skippedTurn:
                         self.skippedTurn = True
                         self.movesSkipped += 1
+                        self.tracksToPlace -= 1
                         return None
                     else:
                         if len(moveValues) > 1:
