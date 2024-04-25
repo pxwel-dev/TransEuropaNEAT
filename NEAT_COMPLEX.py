@@ -14,7 +14,6 @@ class NEATPlayer(Player):
         self.neuralNetwork = neuralNet
         self.allCities = None
         self.tracksUsed = 0
-        self.movesSkipped = 0
         self.noMovesLeftErrors = 0
 
     def set_cities(self, cities):
@@ -185,7 +184,7 @@ class NEATPlayer(Player):
             for i in range(0, len(inputs)):
                 output = self.neuralNetwork.activate([inputs[i][0], inputs[i][1], inputs[i][2], inputs[i][3],
                                                       inputs[i][4], inputs[i][5]])
-                for j in range(0, 3):
+                for j in range(0, 2):
                     inputIndex.append(i)
                     moveValues.append(output[j])
                     moveTypes.append(j)
@@ -218,7 +217,7 @@ class NEATPlayer(Player):
                                           str(bestMove[0].get_id()),
                                           bool(bestMoveType)))
                             break
-                        elif bestMoveCost == 2 and self.tracksToPlace - 2 == 0 and not self.skippedTurn:
+                        elif bestMoveCost == 2 and self.tracksToPlace - 2 == 0:
                             self.tracksToPlace -= 2
                             self.tracksUsed += 2
                             print("{0} Move: {1} -> {2}, Coloured track: {3}"
@@ -237,11 +236,6 @@ class NEATPlayer(Player):
                                 self.noMovesLeftErrors += 1
                                 self.fitness -= 1
                                 return -1
-                    elif bestMoveType == 2 and not self.skippedTurn:
-                        self.skippedTurn = True
-                        self.movesSkipped += 1
-                        self.tracksToPlace -= 1
-                        return None
                     else:
                         if len(moveValues) > 1:
                             moveValues.pop(currentBestMoveIndex)
