@@ -111,36 +111,31 @@ class NEATPlayer(Player):
                 if move[0].get_colour() == Colour.red:
                     if move[0] not in self.citiesToCapture:
                         formatted.append(self.evalNonTargetCityCapture(opponentCityColoursLeft,
-                                                                       opponentNum, Colour.red,
-                                                                       0, game_board, move[0], move[1]))
+                                                                       opponentNum, 0, game_board, move[0]))
                     elif move[0] in self.citiesToCapture:
                         formatted.append(1)
                 elif move[0].get_colour() == Colour.yellow:
                     if move[0] not in self.citiesToCapture:
                         formatted.append(self.evalNonTargetCityCapture(opponentCityColoursLeft,
-                                                                       opponentNum, Colour.red,
-                                                                       1, game_board, move[0], move[1]))
+                                                                       opponentNum, 1, game_board, move[0]))
                     elif move[0] in self.citiesToCapture:
                         formatted.append(1)
                 elif move[0].get_colour() == Colour.orange:
                     if move[0] not in self.citiesToCapture:
                         formatted.append(self.evalNonTargetCityCapture(opponentCityColoursLeft,
-                                                                       opponentNum, Colour.red,
-                                                                       2, game_board, move[0], move[1]))
+                                                                       opponentNum, 2, game_board, move[0]))
                     elif move[0] in self.citiesToCapture:
                         formatted.append(1)
                 elif move[0].get_colour() == Colour.green:
                     if move[0] not in self.citiesToCapture:
                         formatted.append(self.evalNonTargetCityCapture(opponentCityColoursLeft,
-                                                                       opponentNum, Colour.red,
-                                                                       3, game_board, move[0], move[1]))
+                                                                       opponentNum, 3, game_board, move[0]))
                     elif move[0] in self.citiesToCapture:
                         formatted.append(1)
                 elif move[0].get_colour() == Colour.blue:
                     if move[0] not in self.citiesToCapture:
                         formatted.append(self.evalNonTargetCityCapture(opponentCityColoursLeft,
-                                                                       opponentNum, Colour.red,
-                                                                       4, game_board, move[0], move[1]))
+                                                                       opponentNum, 4, game_board, move[0]))
                     elif move[0] in self.citiesToCapture:
                         formatted.append(1)
             else:
