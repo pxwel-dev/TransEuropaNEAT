@@ -229,7 +229,7 @@ class NEATPlayer(Player):
                             else:
                                 # print("NO MOVES LEFT - TURNS")
                                 self.noMovesLeftErrors += 1
-                                self.fitness -= 1
+                                self.fitness -= 100
                                 return -1
                     else:
                         if len(moveValues) > 1:
@@ -239,7 +239,7 @@ class NEATPlayer(Player):
                         else:
                             # print("NO MOVES LEFT - SKIP or NO COLOURED")
                             self.noMovesLeftErrors += 1
-                            self.fitness -= 1
+                            self.fitness -= 100
                             return -1
                 else:
                     print("{0} Chosen Starting City: {1}"
