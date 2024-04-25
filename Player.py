@@ -13,7 +13,7 @@ class Player:
         self.tracksToPlace = 2
         self.colouredTracks = 3
         self.fitness = 0
-        self.capturedCityCols = []
+        self.capturedCities = []
         self._networkAllTracks = Graph()
         self._networkNoColTracks = Graph()
         self._cities = {}
@@ -22,7 +22,7 @@ class Player:
         self.tracksToPlace = 2
         self.colouredTracks = 3
         self.fitness = 0
-        self.capturedCityCols = []
+        self.capturedCities = []
         self._networkAllTracks = Graph()
         self._networkNoColTracks = Graph()
         self._cities = {}
