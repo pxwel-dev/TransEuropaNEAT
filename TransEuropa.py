@@ -1,3 +1,5 @@
+import networkx
+
 from GameBoard import GameBoard
 from HumanPlayer import HumanPlayer
 from NEAT_COMPLEX import NEATPlayer
