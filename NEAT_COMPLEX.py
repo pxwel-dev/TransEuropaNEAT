@@ -83,17 +83,17 @@ class NEATPlayer(Player):
 
             for player in game_board.get_players():
                 if player != self:
-                    if len(player.capturedCityCols) != 0:
-                        for col in player.capturedCityCols:
-                            if col == Colour.red:
+                    if len(player.capturedCities) != 0:
+                        for city in player.capturedCities:
+                            if city.get_colour() == Colour.red:
                                 opponentCityColoursLeft[0] -= 1
-                            if col == Colour.yellow:
+                            if city.get_colour() == Colour.yellow:
                                 opponentCityColoursLeft[1] -= 1
-                            if col == Colour.orange:
+                            if city.get_colour() == Colour.orange:
                                 opponentCityColoursLeft[2] -= 1
-                            if col == Colour.green:
+                            if city.get_colour() == Colour.green:
                                 opponentCityColoursLeft[3] -= 1
-                            if col == Colour.blue:
+                            if city.get_colour() == Colour.blue:
                                 opponentCityColoursLeft[4] -= 1
 
             for i in minCityDistances:
@@ -328,6 +328,5 @@ class NEATPlayer(Player):
                 captured.append(city)
         for city in captured:
             self.citiesToCapture.remove(city)
-            self.capturedCityCols.append(city.get_colour())
-            self.fitness += 0.2
+            self.capturedCities.append(city)
         return Player.has_won(self)
