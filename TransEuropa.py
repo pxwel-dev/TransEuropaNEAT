@@ -78,8 +78,16 @@ class TransEuropa:
 		for player in self.__board.get_players():
 			if isinstance(player, NEATPlayer):
 				print("Neural Network Cities Left: \n ", [city.get_name() for city in player.citiesToCapture])
-				fitnessScore.append(player.fitness)
+				fitnessScore.append(self.calculateTracksLeft(player))
 		return fitnessScore
+
+	def calculateTracksLeft(self, player):
+		network = networkx.multi_source_dijkstra_path_length(
+			self.__board.get_map(), player.get_networkAllTracks().nodes, weight='weight')
+		distance = 0
+		for city in player.citiesToCapture:
+			distance += network[city]
+		return -distance
 
 	def get_players(self) -> []:
 		return self.__players
