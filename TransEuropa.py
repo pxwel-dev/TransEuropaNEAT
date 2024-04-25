@@ -1,7 +1,8 @@
+import networkx
+
 from GameBoard import GameBoard
 from HumanPlayer import HumanPlayer
-from AllBots.NEAT_SIMPLEv6Player import NEATPlayer
-from AllBots.ImperfectMaxN import ImpMaxNPlayer
+from NEAT_COMPLEX import NEATPlayer
 
 
 class TransEuropa:
@@ -45,27 +46,49 @@ class TransEuropa:
 			self.turn_count += 1
 			print("==========\nRound: " + str(self.turn_count) + "\n==========")
 			for player in self.__board.get_players():
+				player.network_merge(self.__board)
+				if player.has_won():
+					game_won = True
+			for player in self.__board.get_players():
 				if not player.has_won() and not game_won:
 					player.tracksToPlace = 2
-					player.skippedTurn = False
-					while player.tracksToPlace > 0 and not player.has_won():
+					while player.tracksToPlace > 0 and not player.has_won() and not game_won:
 						player.network_merge(self.__board)
-						player_move_state = player.make_move(self.__board)
-						if player_move_state == 'w':
+						if player.has_won():
 							game_won = True
-							break
-						elif player_move_state is None:
-							pass
-						elif player_move_state == -1:
-							break
-						else:
-							player.add_node_to_network(self.__board, player_move_state[0], player_move_state[1])
-							player.network_merge(self.__board)
-							if player.has_won():
+						for p in self.__board.get_players():
+							if p != player:
+								p.network_merge(self.__board)
+								if p.has_won():
+									game_won = True
+						if not game_won:
+							player_move_state = player.make_move(self.__board)
+							if player_move_state == 'w':
 								game_won = True
 								break
+							elif player_move_state == -1:
+								break
+							else:
+								player.add_node_to_network(self.__board, player_move_state[0], player_move_state[1])
+								player.network_merge(self.__board)
+								if player.has_won():
+									game_won = True
+								for p in self.__board.get_players():
+									if p != player:
+										p.network_merge(self.__board)
+										if p.has_won():
+											game_won = True
+						else:
+							break
+					for p in self.__board.get_players():
+						p.network_merge(self.__board)
+						if p.has_won():
+							game_won = True
 				else:
-					game_won = True
+					for p in self.__board.get_players():
+						p.network_merge(self.__board)
+						if p.has_won():
+							game_won = True
 					break
 		return self.end_game(self.turn_count)
 
@@ -77,8 +100,16 @@ class TransEuropa:
 		for player in self.__board.get_players():
 			if isinstance(player, NEATPlayer):
 				print("Neural Network Cities Left: \n ", [city.get_name() for city in player.citiesToCapture])
-				fitnessScore.append(player.fitness)
+				fitnessScore.append(self.calculateTracksLeft(player))
 		return fitnessScore
+
+	def calculateTracksLeft(self, player):
+		network = networkx.multi_source_dijkstra_path_length(
+			self.__board.get_map(), player.get_networkAllTracks().nodes, weight='weight')
+		distance = 0
+		for city in player.citiesToCapture:
+			distance += network[city]
+		return -distance
 
 	def get_players(self) -> []:
 		return self.__players

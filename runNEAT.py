@@ -94,20 +94,13 @@ def multiprocessing_eval(genomes, conf):
                       "=================================\n"
                       "Game statistic for game {2}/{10}:\n"
                       "=================================\n"
-                      "| Name     | Fitness | Cities Left |Tracks Used | ColTracks Left | Skipped Turns | No Moves "
-                      "Error Count |\n"
-                      "| Player 1 |   {3}   |     {35}    |    {11}    |      {17}      |      {23}     |          "
-                      "{29}        |\n"
-                      "| Player 2 |   {4}   |     {36}    |    {12}    |      {18}      |      {24}     |          "
-                      "{30}        |\n"
-                      "| Player 3 |   {5}   |     {37}    |    {13}    |      {19}      |      {25}     |          "
-                      "{31}        |\n"
-                      "| Player 4 |   {6}   |     {38}    |    {14}    |      {20}      |      {26}     |          "
-                      "{32}        |\n"
-                      "| Player 5 |   {7}   |     {39}    |    {15}    |      {21}      |      {27}     |          "
-                      "{33}        |\n"
-                      "| Player 6 |   {8}   |     {40}    |    {16}    |      {22}      |      {28}     |          "
-                      "{34}        |\n"
+                      "| Name     | Uncap Dist | Cities Left | Tracks Used | ColTracks Left | No Moves Error Count |\n"
+                      "| Player 1 |   {3:02}       |   {35:02}        |   {11:02}        |    {17:02}          |      {29:02}              |\n"
+                      "| Player 2 |   {4:02}       |   {36:02}        |   {12:02}        |    {18:02}          |      {30:02}              |\n"
+                      "| Player 3 |   {5:02}       |   {37:02}        |   {13:02}        |    {19:02}          |      {31:02}              |\n"
+                      "| Player 4 |   {6:02}       |   {38:02}        |   {14:02}        |    {20:02}          |      {32:02}              |\n"
+                      "| Player 5 |   {7:02}       |   {39:02}        |   {15:02}        |    {21:02}          |      {33:02}              |\n"
+                      "| Player 6 |   {8:02}       |   {40:02}        |   {16:02}        |    {22:02}          |      {34:02}              |\n"
                       "=================================".format(count, int(len(genomes) / 6), j + 1,
                                                                  round(fitnessScore[0], 2),
                                                                  round(fitnessScore[1], 2),
@@ -129,12 +122,12 @@ def multiprocessing_eval(genomes, conf):
                                                                  game.get_players_post_game()[3].colouredTracks,
                                                                  game.get_players_post_game()[4].colouredTracks,
                                                                  game.get_players_post_game()[5].colouredTracks,
-                                                                 game.get_players_post_game()[0].movesSkipped,
-                                                                 game.get_players_post_game()[1].movesSkipped,
-                                                                 game.get_players_post_game()[2].movesSkipped,
-                                                                 game.get_players_post_game()[3].movesSkipped,
-                                                                 game.get_players_post_game()[4].movesSkipped,
-                                                                 game.get_players_post_game()[5].movesSkipped,
+                                                                 None,
+                                                                 None,
+                                                                 None,
+                                                                 None,
+                                                                 None,
+                                                                 None,
                                                                  # None,
                                                                  # None,
                                                                  # None,
@@ -159,7 +152,7 @@ def multiprocessing_eval(genomes, conf):
 
 
 def test_best_network(conf):
-    f = open("NEAT-COMPLEX-V2.pickle", "rb")
+    f = open("NEAT-COMPLEX-V5.pickle", "rb")
     best_player = pickle.load(f)
     game = TransEuropa(
         [NEATPlayer("NeuralNetwork", neat.nn.FeedForwardNetwork.create(best_player, conf)), HumanPlayer("Pawel")],
@@ -187,8 +180,8 @@ if __name__ == "__main__":
     config_path = os.path.join(local_dir, "NEAT_COMPLEX_Config.txt")
 
     config = neat.Config(neat.DefaultGenome, neat.DefaultReproduction,
-                           neat.DefaultSpeciesSet, neat.DefaultStagnation,
-                           config_path)
+                         neat.DefaultSpeciesSet, neat.DefaultStagnation,
+                         config_path)
 
-    # run_neat(config, "NEAT-COMPLEX-V2.pickle")
-    test_best_network(config)
+    run_neat(config, "NEAT-COMPLEX-V5.pickle")
+    # test_best_network(config)
